@@ -207,8 +207,4 @@ hackatonTech2/
 
 ## 📝 Licencia
 
-Este proyecto fue desarrollado para Talento Tech.
-
-## 👨‍💻 Desarrollo
-
-Proyecto desarrollado con Claude Code.
+Este proyecto fue desarrollado para Ucaldas
