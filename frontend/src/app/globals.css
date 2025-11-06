@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* Universidad del Cauca Brand Colors */
+    --color-unicauca-purple: #b64cff;
+    --color-unicauca-cyan: #00ffff;
+    --color-unicauca-lavender: #9fa4ff;
+    --color-unicauca-dark: #12013e;
+    --color-unicauca-navy: #1d1d3e;
+    --color-unicauca-text-dark: #2b1f73;
+    --color-unicauca-text-darker: #312a72;
+
+    /* Font variables - for now using Nunito Sans as fallback for display */
+    --font-hey-august: var(--font-nunito-sans);
+  }
+
+  /* Apply Universidad del Cauca styling to headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-hey-august), system-ui, sans-serif;
+    font-weight: 700;
+  }
+
+  /* Dark background for the app */
+  body {
+    background-color: var(--color-unicauca-dark);
+    color: #ffffff;
+  }
+}

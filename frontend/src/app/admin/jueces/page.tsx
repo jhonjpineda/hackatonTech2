@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { authService, User } from '@/services/auth.service';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import toast from 'react-hot-toast';
 import {
   UserPlus,
@@ -139,23 +140,25 @@ export default function AdminJuecesPage() {
 
   if (!user || !token) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-600">Cargando...</div>
-      </div>
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-gray-600">Cargando...</div>
+        </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
+    <DashboardLayout>
+      <div className="space-y-6">
         {/* Header */}
-        <div className="mb-8">
+        <div>
           <Link
-            href="/admin"
+            href="/dashboard"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="h-4 w-4" />
-            Volver al Panel de Administración
+            Volver al Dashboard
           </Link>
 
           <div className="flex items-center justify-between">
@@ -453,6 +456,6 @@ export default function AdminJuecesPage() {
           </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

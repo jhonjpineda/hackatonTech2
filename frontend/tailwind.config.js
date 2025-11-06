@@ -8,18 +8,28 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Universidad del Cauca Brand Colors
+        unicauca: {
+          purple: '#b64cff',
+          cyan: '#00ffff',
+          lavender: '#9fa4ff',
+          dark: '#12013e',
+          navy: '#1d1d3e',
+          'text-dark': '#2b1f73',
+          'text-darker': '#312a72',
+        },
         primary: {
           50: '#f0f9ff',
           100: '#e0f2fe',
           200: '#bae6fd',
           300: '#7dd3fc',
           400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
-          950: '#082f49',
+          500: '#b64cff', // Using UniCauca purple as primary
+          600: '#9333ea',
+          700: '#7e22ce',
+          800: '#6b21a8',
+          900: '#2b1f73', // Using UniCauca text-dark
+          950: '#12013e', // Using UniCauca dark
         },
         secondary: {
           50: '#faf5ff',
@@ -27,7 +37,7 @@ module.exports = {
           200: '#e9d5ff',
           300: '#d8b4fe',
           400: '#c084fc',
-          500: '#a855f7',
+          500: '#9fa4ff', // Using UniCauca lavender
           600: '#9333ea',
           700: '#7e22ce',
           800: '#6b21a8',
@@ -72,7 +82,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-nunito-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-hey-august)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'Consolas', 'monospace'],
       },
       spacing: {
