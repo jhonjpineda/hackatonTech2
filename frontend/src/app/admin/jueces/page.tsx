@@ -142,7 +142,7 @@ export default function AdminJuecesPage() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">
-          <div className="text-gray-600">Cargando...</div>
+          <div className="text-gray-200 text-lg">Cargando...</div>
         </div>
       </DashboardLayout>
     );
@@ -155,7 +155,7 @@ export default function AdminJuecesPage() {
         <div>
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
+            className="inline-flex items-center gap-2 text-gray-300 hover:text-unicauca-cyan mb-4 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver al Dashboard
@@ -163,11 +163,11 @@ export default function AdminJuecesPage() {
 
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <Users className="h-8 w-8 text-purple-600" />
+              <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+                <Users className="h-8 w-8 text-unicauca-purple" />
                 Gestión de Jueces
               </h1>
-              <p className="mt-2 text-gray-600">
+              <p className="mt-2 text-gray-300">
                 Crea y administra usuarios con rol de juez para evaluar hackathones
               </p>
             </div>
@@ -175,7 +175,7 @@ export default function AdminJuecesPage() {
             {!showForm && (
               <button
                 onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 transition-colors font-medium shadow-lg"
               >
                 <UserPlus className="h-5 w-5" />
                 Crear Juez
@@ -186,12 +186,12 @@ export default function AdminJuecesPage() {
 
         {/* Form */}
         {showForm && !createdJudge && (
-          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+          <div className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 p-6 mb-8 shadow-lg">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900">Nuevo Juez</h2>
+              <h2 className="text-xl font-semibold text-white">Nuevo Juez</h2>
               <button
                 onClick={() => setShowForm(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-300 hover:text-unicauca-cyan transition-colors"
               >
                 Cancelar
               </button>
@@ -200,7 +200,7 @@ export default function AdminJuecesPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="documento" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="documento" className="block text-sm font-medium text-gray-200 mb-2">
                     Documento de Identidad *
                   </label>
                   <div className="relative">
@@ -210,7 +210,7 @@ export default function AdminJuecesPage() {
                       id="documento"
                       value={formData.documento}
                       onChange={(e) => setFormData({ ...formData, documento: e.target.value })}
-                      className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="pl-10 w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg focus:ring-2 focus:ring-unicauca-purple focus:border-unicauca-purple text-white placeholder-gray-400"
                       placeholder="Ej: 1234567890"
                       required
                     />
@@ -218,7 +218,7 @@ export default function AdminJuecesPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-2">
                     Email *
                   </label>
                   <div className="relative">
@@ -228,7 +228,7 @@ export default function AdminJuecesPage() {
                       id="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="pl-10 w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg focus:ring-2 focus:ring-unicauca-purple focus:border-unicauca-purple text-white placeholder-gray-400"
                       placeholder="juez@example.com"
                       required
                     />
@@ -236,7 +236,7 @@ export default function AdminJuecesPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="nombres" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="nombres" className="block text-sm font-medium text-gray-200 mb-2">
                     Nombres *
                   </label>
                   <input
@@ -244,14 +244,14 @@ export default function AdminJuecesPage() {
                     id="nombres"
                     value={formData.nombres}
                     onChange={(e) => setFormData({ ...formData, nombres: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg focus:ring-2 focus:ring-unicauca-purple focus:border-unicauca-purple text-white placeholder-gray-400"
                     placeholder="Juan Carlos"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="apellidos" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="apellidos" className="block text-sm font-medium text-gray-200 mb-2">
                     Apellidos *
                   </label>
                   <input
@@ -259,14 +259,14 @@ export default function AdminJuecesPage() {
                     id="apellidos"
                     value={formData.apellidos}
                     onChange={(e) => setFormData({ ...formData, apellidos: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg focus:ring-2 focus:ring-unicauca-purple focus:border-unicauca-purple text-white placeholder-gray-400"
                     placeholder="Pérez García"
                     required
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label htmlFor="telefono" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="telefono" className="block text-sm font-medium text-gray-200 mb-2">
                     Teléfono (opcional)
                   </label>
                   <div className="relative">
@@ -276,16 +276,16 @@ export default function AdminJuecesPage() {
                       id="telefono"
                       value={formData.telefono}
                       onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
-                      className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="pl-10 w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg focus:ring-2 focus:ring-unicauca-purple focus:border-unicauca-purple text-white placeholder-gray-400"
                       placeholder="+57 300 123 4567"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                <p className="text-sm text-yellow-700">
-                  <strong>Nota:</strong> Se generará una contraseña temporal que se enviará por email al juez.
+              <div className="bg-unicauca-purple/10 border-l-4 border-unicauca-purple p-4 rounded-r">
+                <p className="text-sm text-gray-200">
+                  <strong className="text-unicauca-purple">Nota:</strong> Se generará una contraseña temporal que se enviará por email al juez.
                   El juez deberá cambiar su contraseña en el primer inicio de sesión.
                 </p>
               </div>
@@ -294,14 +294,14 @@ export default function AdminJuecesPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium disabled:opacity-50"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 transition-colors font-medium disabled:opacity-50 shadow-lg"
                 >
                   {loading ? 'Creando...' : 'Crear Juez'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  className="px-6 py-3 border border-unicauca-purple/30 text-gray-300 rounded-lg hover:bg-unicauca-dark transition-colors font-medium"
                 >
                   Cancelar
                 </button>
@@ -312,36 +312,36 @@ export default function AdminJuecesPage() {
 
         {/* Password Modal */}
         {createdJudge && showPassword && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg max-w-md w-full p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+            <div className="bg-unicauca-navy rounded-lg max-w-md w-full p-6 border border-unicauca-purple/50 shadow-2xl">
+              <h3 className="text-xl font-semibold text-white mb-4">
                 Juez Creado Exitosamente
               </h3>
 
               <div className="space-y-4">
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                  <p className="text-sm font-medium text-purple-900 mb-2">
+                <div className="bg-unicauca-purple/20 border border-unicauca-purple rounded-lg p-4">
+                  <p className="text-sm font-medium text-white mb-2">
                     Juez: {createdJudge.user.nombres} {createdJudge.user.apellidos}
                   </p>
-                  <p className="text-sm text-purple-700">
+                  <p className="text-sm text-gray-300">
                     Email: {createdJudge.user.email}
                   </p>
-                  <p className="text-sm text-purple-700">
+                  <p className="text-sm text-gray-300">
                     Documento: {createdJudge.user.documento}
                   </p>
                 </div>
 
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <p className="text-sm font-medium text-yellow-900 mb-2">
+                <div className="bg-unicauca-cyan/10 border border-unicauca-cyan rounded-lg p-4">
+                  <p className="text-sm font-medium text-unicauca-cyan mb-2">
                     Contraseña Temporal:
                   </p>
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 px-3 py-2 bg-white border border-yellow-300 rounded font-mono text-sm">
+                    <code className="flex-1 px-3 py-2 bg-unicauca-dark border border-unicauca-cyan/30 rounded font-mono text-sm text-white">
                       {createdJudge.temporaryPassword}
                     </code>
                     <button
                       onClick={copyPassword}
-                      className="p-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors"
+                      className="p-2 bg-unicauca-cyan text-unicauca-dark rounded hover:bg-unicauca-cyan/80 transition-colors"
                       title="Copiar contraseña"
                     >
                       {copiedPassword ? (
@@ -353,9 +353,9 @@ export default function AdminJuecesPage() {
                   </div>
                 </div>
 
-                <div className="bg-red-50 border-l-4 border-red-400 p-4">
-                  <p className="text-sm text-red-700">
-                    <strong>Importante:</strong> Guarda esta contraseña ahora. No podrás verla nuevamente.
+                <div className="bg-red-500/10 border-l-4 border-red-500 p-4 rounded-r">
+                  <p className="text-sm text-gray-200">
+                    <strong className="text-red-400">Importante:</strong> Guarda esta contraseña ahora. No podrás verla nuevamente.
                     Se ha enviado un email al juez con sus credenciales.
                   </p>
                 </div>
@@ -363,7 +363,7 @@ export default function AdminJuecesPage() {
 
               <button
                 onClick={closePasswordModal}
-                className="w-full mt-6 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+                className="w-full mt-6 px-6 py-3 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 transition-colors font-medium shadow-lg"
               >
                 Cerrar
               </button>
@@ -372,69 +372,69 @@ export default function AdminJuecesPage() {
         )}
 
         {/* Judges List */}
-        <div className="bg-white rounded-lg border border-gray-200">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">
+        <div className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 shadow-lg">
+          <div className="p-6 border-b border-unicauca-purple/30">
+            <h2 className="text-xl font-semibold text-white">
               Jueces Registrados ({judges.length})
             </h2>
           </div>
 
           <div className="p-6">
             {loadingJudges ? (
-              <div className="text-center py-8 text-gray-600">
+              <div className="text-center py-8 text-gray-300 text-lg">
                 Cargando jueces...
               </div>
             ) : judges.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-400">
                 No hay jueces registrados aún
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-unicauca-dark">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                         Nombre
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                         Documento
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                         Email
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                         Teléfono
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                         Estado
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                         Acciones
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="divide-y divide-unicauca-purple/20">
                     {judges.map((judge) => (
-                      <tr key={judge.id} className="hover:bg-gray-50">
+                      <tr key={judge.id} className="hover:bg-unicauca-dark/50 transition-colors">
                         <td className="px-4 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-white">
                             {judge.nombres} {judge.apellidos}
                           </div>
                         </td>
-                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
                           {judge.documento}
                         </td>
-                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
                           {judge.email}
                         </td>
-                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
                           {judge.telefono || '-'}
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
                           <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                             judge.status === 'ACTIVE'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
+                              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                              : 'bg-red-500/20 text-red-400 border border-red-500/30'
                           }`}>
                             {judge.status === 'ACTIVE' ? 'Activo' : judge.status}
                           </span>
@@ -442,7 +442,7 @@ export default function AdminJuecesPage() {
                         <td className="px-4 py-4 whitespace-nowrap text-sm">
                           <Link
                             href={`/admin/jueces/${judge.id}/asignaciones`}
-                            className="text-purple-600 hover:text-purple-900 font-medium"
+                            className="text-unicauca-cyan hover:text-unicauca-cyan/80 font-medium transition-colors"
                           >
                             Ver Asignaciones
                           </Link>
