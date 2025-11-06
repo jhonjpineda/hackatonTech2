@@ -1,0 +1,706 @@
+// Prisma Schema para HackatonTech2
+// Versión: 1.0
+// Base de datos: PostgreSQL 15
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:password123@localhost:5432/hackatontech2_dev"
+}
+
+// ============================================
+// USUARIOS Y AUTENTICACIÓN
+// ============================================
+
+enum UserRole {
+  CAMPISTA      // Participante de hackathones
+  JUEZ          // Evaluador de proyectos
+  ADMIN         // Administrador/Coordinador
+  SUPERADMIN    // Super administrador del sistema
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+model User {
+  id                String      @id @default(uuid())
+  documento         String      @unique // Número de documento (cédula)
+  nombres           String
+  apellidos         String
+  email             String      @unique
+  password          String
+  role              UserRole    @default(CAMPISTA)
+  status            UserStatus  @default(PENDING_VERIFICATION)
+
+  // Datos adicionales de SIGA
+  fechaExpedicion   DateTime?
+  departamento      String?
+  municipio         String?
+  genero            String?
+  telefono          String?
+  programaInteres   String?     // Programa de TalentoTech
+  modalidad         String?
+  disponibilidad    String?
+
+  // Control de acceso
+  mustChangePassword Boolean    @default(true)
+  lastLogin         DateTime?
+  emailVerified     Boolean     @default(false)
+  emailVerifiedAt   DateTime?
+
+  // Metadata
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  deletedAt         DateTime?
+
+  // Relaciones
+  campista          Campista?
+  juez              Juez?
+  notifications     Notification[]
+  sessions          Session[]
+
+  @@index([documento])
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  token        String   @unique
+  refreshToken String?  @unique
+  ipAddress    String?
+  userAgent    String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("sessions")
+}
+
+// ============================================
+// CAMPISTAS (PARTICIPANTES)
+// ============================================
+
+model Campista {
+  id                String           @id @default(uuid())
+  userId            String           @unique
+
+  // Validaciones SIGA
+  validadoSIGA      Boolean          @default(false)
+  fechaValidacionSIGA DateTime?
+  dataSIGA          Json?            // Datos completos del reporte 1003
+
+  // Validaciones Moodle (opcional)
+  validadoMoodle    Boolean          @default(false)
+  bootcampsMoodle   Json?            // Array de bootcamps completados
+
+  // Metadata
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  // Relaciones
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  equiposMiembro    TeamMember[]
+  equiposCreados    Team[]
+  inscripciones     Registration[]
+
+  @@index([userId])
+  @@map("campistas")
+}
+
+// ============================================
+// JUECES (EVALUADORES)
+// ============================================
+
+model Juez {
+  id                String           @id @default(uuid())
+  userId            String           @unique
+  especialidad      String?          // Área de expertise
+  biografia         String?          @db.Text
+
+  // Metadata
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  // Relaciones
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asignaciones      JudgeAssignment[]
+  evaluaciones      Evaluation[]
+
+  @@index([userId])
+  @@map("jueces")
+}
+
+// ============================================
+// HACKATHONES
+// ============================================
+
+enum HackathonStatus {
+  DRAFT           // Borrador
+  OPEN            // Inscripciones abiertas
+  CLOSED          // Inscripciones cerradas
+  IN_PROGRESS     // En progreso
+  EVALUATION      // En evaluación
+  COMPLETED       // Completado
+  CANCELLED       // Cancelado
+}
+
+model Hackathon {
+  id                    String           @id @default(uuid())
+  nombre                String           @unique
+  descripcion           String           @db.Text
+  slug                  String           @unique
+
+  // Configuración temporal
+  fechaInicio           DateTime
+  fechaFin              DateTime
+  duracionHoras         Int?             // Duración en horas
+
+  // Ventana de inscripción
+  inscripcionInicio     DateTime
+  inscripcionFin        DateTime
+  limiteTiempoInscripcion Int?           // Minutos para completar inscripción
+
+  // Configuración
+  maxEquipos            Int?
+  maxMiembrosPorEquipo  Int              @default(5)
+  temasDisponibles      String[]         // Array de temas habilitados
+
+  // Estado
+  status                HackathonStatus  @default(DRAFT)
+  publicado             Boolean          @default(false)
+
+  // Metadata
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  createdBy             String?
+
+  // Relaciones
+  temas                 Theme[]
+  equipos               Team[]
+  inscripciones         Registration[]
+
+  @@index([slug])
+  @@index([status])
+  @@index([fechaInicio])
+  @@map("hackathons")
+}
+
+// ============================================
+// TEMAS Y RETOS
+// ============================================
+
+enum ThemeType {
+  PROGRAMACION
+  INTELIGENCIA_ARTIFICIAL
+  ANALISIS_DATOS
+  ARQUITECTURA_NUBE
+  BLOCKCHAIN
+  CIBERSEGURIDAD
+}
+
+model Theme {
+  id                String        @id @default(uuid())
+  hackathonId       String
+  tipo              ThemeType
+  nombre            String
+  descripcion       String?       @db.Text
+  icono             String?
+  color             String?
+  orden             Int           @default(0)
+  activo            Boolean       @default(true)
+
+  // Metadata
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relaciones
+  hackathon         Hackathon     @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  retos             Challenge[]
+  equipos           Team[]
+
+  @@unique([hackathonId, tipo])
+  @@index([hackathonId])
+  @@index([tipo])
+  @@map("themes")
+}
+
+enum ChallengeType {
+  DIGITAL           // Descripción en plataforma
+  PDF               // Archivo PDF
+  HYBRID            // Ambos
+}
+
+enum ChallengeStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Challenge {
+  id                String           @id @default(uuid())
+  themeId           String
+  nombre            String
+  descripcion       String?          @db.Text
+  tipo              ChallengeType    @default(DIGITAL)
+
+  // Contenido digital
+  objetivos         String?          @db.Text
+  entregables       String?          @db.Text
+  recursos          String?          @db.Text
+  criteriosExito    String?          @db.Text
+
+  // Archivo PDF
+  pdfUrl            String?
+  pdfFilename       String?
+  pdfSize           Int?             // Tamaño en bytes
+  pdfUploadedAt     DateTime?
+
+  // Configuración
+  tiempoEstimado    Int?             // Minutos
+  dificultad        String?          // Fácil, Medio, Difícil
+  puntosTotales     Int              @default(100)
+  orden             Int              @default(0)
+
+  // Estado
+  status            ChallengeStatus  @default(DRAFT)
+  publicado         Boolean          @default(false)
+
+  // Metadata
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  createdBy         String?
+
+  // Relaciones
+  theme             Theme            @relation(fields: [themeId], references: [id], onDelete: Cascade)
+  rubricas          Rubric[]
+  asignacionesJueces JudgeAssignment[]
+  evaluaciones      Evaluation[]
+  entregas          Submission[]
+
+  @@index([themeId])
+  @@index([status])
+  @@map("challenges")
+}
+
+// ============================================
+// RÚBRICAS DE EVALUACIÓN
+// ============================================
+
+model Rubric {
+  id                String           @id @default(uuid())
+  challengeId       String
+  nombre            String
+  descripcion       String           @db.Text
+  porcentaje        Decimal          @db.Decimal(5, 2) // 0.00 - 100.00
+
+  // Escala de calificación
+  escalaMin         Int              @default(1)
+  escalaMax         Int              @default(10)
+
+  // Criterios detallados (opcional)
+  criterios         Json?            // Array de criterios por nivel
+
+  // Orden y estado
+  orden             Int              @default(0)
+  activo            Boolean          @default(true)
+
+  // Metadata
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  // Relaciones
+  challenge         Challenge        @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  calificaciones    RubricScore[]
+
+  @@index([challengeId])
+  @@map("rubrics")
+}
+
+// ============================================
+// EQUIPOS
+// ============================================
+
+enum TeamStatus {
+  DRAFT           // Borrador (incompleto)
+  PENDING         // Pendiente de aprobación
+  ACTIVE          // Activo
+  DISQUALIFIED    // Descalificado
+  RETIRED         // Retirado
+}
+
+model Team {
+  id                String           @id @default(uuid())
+  hackathonId       String
+  themeId           String
+  nombre            String
+  descripcion       String?          @db.Text
+  logo              String?
+
+  // Líder del equipo
+  liderUserId       String
+
+  // Estado
+  status            TeamStatus       @default(DRAFT)
+  inscrito          Boolean          @default(false)
+  fechaInscripcion  DateTime?
+
+  // Metadata
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  // Relaciones
+  hackathon         Hackathon        @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  theme             Theme            @relation(fields: [themeId], references: [id])
+  lider             Campista         @relation(fields: [liderUserId], references: [userId])
+  miembros          TeamMember[]
+  invitaciones      TeamInvitation[]
+  entregas          Submission[]
+  evaluaciones      Evaluation[]
+
+  @@unique([hackathonId, nombre])
+  @@index([hackathonId])
+  @@index([themeId])
+  @@index([status])
+  @@map("teams")
+}
+
+enum TeamMemberRole {
+  LEADER
+  MEMBER
+}
+
+enum TeamMemberStatus {
+  ACTIVE
+  REMOVED
+  LEFT
+}
+
+model TeamMember {
+  id                String           @id @default(uuid())
+  teamId            String
+  campistaUserId    String
+  role              TeamMemberRole   @default(MEMBER)
+  status            TeamMemberStatus @default(ACTIVE)
+
+  // Metadata
+  joinedAt          DateTime         @default(now())
+  leftAt            DateTime?
+
+  // Relaciones
+  team              Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  campista          Campista         @relation(fields: [campistaUserId], references: [userId])
+
+  @@unique([teamId, campistaUserId])
+  @@index([teamId])
+  @@index([campistaUserId])
+  @@map("team_members")
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
+  CANCELLED
+}
+
+model TeamInvitation {
+  id                String           @id @default(uuid())
+  teamId            String
+  email             String
+  documento         String?
+  invitedBy         String           // User ID
+
+  status            InvitationStatus @default(PENDING)
+  token             String           @unique
+  expiresAt         DateTime
+
+  respondedAt       DateTime?
+
+  // Metadata
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  // Relaciones
+  team              Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@index([email])
+  @@index([token])
+  @@map("team_invitations")
+}
+
+// ============================================
+// INSCRIPCIONES
+// ============================================
+
+enum RegistrationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model Registration {
+  id                String              @id @default(uuid())
+  hackathonId       String
+  campistaUserId    String
+
+  status            RegistrationStatus  @default(PENDING)
+
+  // Validaciones
+  validadoSIGA      Boolean             @default(false)
+  validadoMoodle    Boolean             @default(false)
+  temasRecomendados String[]            // Basado en Moodle
+
+  // Metadata
+  registeredAt      DateTime            @default(now())
+  approvedAt        DateTime?
+  rejectedAt        DateTime?
+
+  // Relaciones
+  hackathon         Hackathon           @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  campista          Campista            @relation(fields: [campistaUserId], references: [userId])
+
+  @@unique([hackathonId, campistaUserId])
+  @@index([hackathonId])
+  @@index([campistaUserId])
+  @@index([status])
+  @@map("registrations")
+}
+
+// ============================================
+// ENTREGAS Y EVALUACIONES
+// ============================================
+
+enum SubmissionStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  EVALUATED
+  REJECTED
+}
+
+model Submission {
+  id                String           @id @default(uuid())
+  challengeId       String
+  teamId            String
+
+  // Contenido
+  titulo            String
+  descripcion       String           @db.Text
+  repositorio       String?          // URL de GitHub, GitLab, etc.
+  demoUrl           String?          // URL de demo
+
+  // Archivos
+  archivos          Json?            // Array de URLs de archivos
+
+  // Estado
+  status            SubmissionStatus @default(DRAFT)
+
+  // Metadata
+  submittedAt       DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  submittedBy       String?          // User ID
+
+  // Relaciones
+  challenge         Challenge        @relation(fields: [challengeId], references: [id])
+  team              Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  evaluaciones      Evaluation[]
+
+  @@unique([challengeId, teamId])
+  @@index([challengeId])
+  @@index([teamId])
+  @@index([status])
+  @@map("submissions")
+}
+
+// Asignación de jueces a retos
+model JudgeAssignment {
+  id                String           @id @default(uuid())
+  challengeId       String
+  juezUserId        String
+
+  activo            Boolean          @default(true)
+
+  // Metadata
+  assignedAt        DateTime         @default(now())
+  assignedBy        String?          // User ID del admin
+
+  // Relaciones
+  challenge         Challenge        @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  juez              Juez             @relation(fields: [juezUserId], references: [userId])
+
+  @@unique([challengeId, juezUserId])
+  @@index([challengeId])
+  @@index([juezUserId])
+  @@map("judge_assignments")
+}
+
+enum EvaluationStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Evaluation {
+  id                String           @id @default(uuid())
+  submissionId      String
+  challengeId       String
+  teamId            String
+  juezUserId        String
+
+  // Calificaciones por rúbrica
+  puntuacionTotal   Decimal?         @db.Decimal(6, 2)
+
+  // Comentarios generales
+  comentarios       String?          @db.Text
+  fortalezas        String?          @db.Text
+  mejoras           String?          @db.Text
+
+  // Estado
+  status            EvaluationStatus @default(PENDING)
+
+  // Metadata
+  startedAt         DateTime?
+  completedAt       DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  // Relaciones
+  submission        Submission       @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  challenge         Challenge        @relation(fields: [challengeId], references: [id])
+  team              Team             @relation(fields: [teamId], references: [id])
+  juez              Juez             @relation(fields: [juezUserId], references: [userId])
+  rubricScores      RubricScore[]
+
+  @@unique([submissionId, juezUserId])
+  @@index([submissionId])
+  @@index([challengeId])
+  @@index([teamId])
+  @@index([juezUserId])
+  @@index([status])
+  @@map("evaluations")
+}
+
+model RubricScore {
+  id                String           @id @default(uuid())
+  evaluationId      String
+  rubricId          String
+
+  // Calificación
+  puntos            Decimal          @db.Decimal(6, 2) // Puntos asignados (1-10, etc)
+  puntosPonderados  Decimal          @db.Decimal(6, 2) // Puntos × porcentaje
+
+  // Comentarios específicos de la rúbrica
+  comentarios       String?          @db.Text
+
+  // Metadata
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  // Relaciones
+  evaluation        Evaluation       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  rubric            Rubric           @relation(fields: [rubricId], references: [id])
+
+  @@unique([evaluationId, rubricId])
+  @@index([evaluationId])
+  @@index([rubricId])
+  @@map("rubric_scores")
+}
+
+// ============================================
+// NOTIFICACIONES
+// ============================================
+
+enum NotificationType {
+  SYSTEM
+  INVITATION
+  EVALUATION
+  ANNOUNCEMENT
+  REMINDER
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+  ARCHIVED
+}
+
+model Notification {
+  id                String              @id @default(uuid())
+  userId            String
+  tipo              NotificationType
+  titulo            String
+  mensaje           String              @db.Text
+  link              String?
+
+  status            NotificationStatus  @default(UNREAD)
+
+  // Metadata
+  createdAt         DateTime            @default(now())
+  readAt            DateTime?
+
+  // Relaciones
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// ============================================
+// CONFIGURACIÓN Y METADATA
+// ============================================
+
+model SystemConfig {
+  id                String           @id @default(uuid())
+  key               String           @unique
+  value             String           @db.Text
+  descripcion       String?
+  tipo              String           @default("string") // string, number, boolean, json
+
+  // Metadata
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  updatedBy         String?
+
+  @@index([key])
+  @@map("system_config")
+}
+
+model AuditLog {
+  id                String           @id @default(uuid())
+  userId            String?
+  accion            String
+  entidad           String           // Nombre de la tabla
+  entidadId         String           // ID del registro
+  cambios           Json?            // Datos del cambio
+  ipAddress         String?
+  userAgent         String?
+
+  // Metadata
+  createdAt         DateTime         @default(now())
+
+  @@index([userId])
+  @@index([entidad])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
