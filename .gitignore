@@ -55,3 +55,6 @@ out/
 
 # TypeScript
 *.tsbuildinfo
+
+# Claude Code
+.claude/settings.local.json

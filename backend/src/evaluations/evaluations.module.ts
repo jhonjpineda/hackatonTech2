@@ -6,9 +6,10 @@ import { Evaluation } from '../entities/evaluation.entity';
 import { Rubric } from '../entities/rubric.entity';
 import { Team } from '../entities/team.entity';
 import { User } from '../entities/user.entity';
+import { Submission } from '../entities/submission.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Evaluation, Rubric, Team, User])],
+  imports: [TypeOrmModule.forFeature([Evaluation, Rubric, Team, User, Submission])],
   controllers: [EvaluationsController],
   providers: [EvaluationsService],
   exports: [EvaluationsService],

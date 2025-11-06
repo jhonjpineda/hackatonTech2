@@ -178,6 +178,14 @@ export class EvaluationsService {
     await this.evaluationRepository.remove(evaluation);
   }
 
+  async findBySubmission(submissionId: string) {
+    return await this.evaluationRepository.find({
+      where: { submissionId },
+      relations: ['rubric', 'juez'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
   async getTeamScore(teamId: string, challengeId: string) {
     // Obtener todas las rúbricas del reto
     const rubrics = await this.rubricRepository.find({

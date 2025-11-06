@@ -73,6 +73,13 @@ export class EvaluationsController {
     return this.evaluationsService.findByChallenge(challengeId);
   }
 
+  @Get('submission/:submissionId')
+  @ApiOperation({ summary: 'Obtener evaluaciones de una entrega' })
+  @ApiResponse({ status: 200, description: 'Lista de evaluaciones de la entrega' })
+  findBySubmission(@Param('submissionId') submissionId: string) {
+    return this.evaluationsService.findBySubmission(submissionId);
+  }
+
   @Get('team/:teamId/score/:challengeId')
   @ApiOperation({
     summary: 'Obtener puntuación calculada de un equipo para un reto',
