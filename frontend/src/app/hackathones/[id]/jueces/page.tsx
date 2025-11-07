@@ -8,7 +8,7 @@ import { authService } from '@/services/auth.service';
 import { judgeService } from '@/services/judge.service';
 import { hackathonService } from '@/services/hackathonService';
 import { teamService } from '@/services/team.service';
-import { Shield, Trash2, UserCheck } from 'lucide-react';
+import { Shield, Trash2, UserPlus } from 'lucide-react';
 
 interface Judge {
   id: string;
@@ -169,7 +169,7 @@ export default function HackathonJudgesPage() {
 
         <div className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 p-6 shadow-lg">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <UserCheck className="h-5 w-5" />
+            <UserPlus className="h-5 w-5" />
             Asignar Juez
           </h2>
 
