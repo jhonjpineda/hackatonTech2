@@ -6,7 +6,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { judgeAssignmentService } from '@/services/judge-assignment.service';
 import { authService } from '@/services/auth.service';
 import { judgeService } from '@/services/judge.service';
-import { hackathonService } from '@/services/hackathon.service';
+import { hackathonService } from '@/services/hackathonService';
 import { teamService } from '@/services/team.service';
 import { Shield, Trash2, UserCheck } from 'lucide-react';
 
@@ -62,7 +62,7 @@ export default function HackathonJudgesPage() {
         judgeService.getAllJudges(token),
         teamService.getTeamsByHackathon(hackathonId, token),
         judgeAssignmentService.getHackathonJudges(hackathonId, token),
-        hackathonService.getHackathonById(hackathonId, token),
+        hackathonService.getById(hackathonId),
       ]);
 
       setJudges(judgesData);
