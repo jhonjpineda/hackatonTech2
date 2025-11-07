@@ -26,6 +26,7 @@ import {
   Tag,
   Target,
   FileText,
+  Shield,
 } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -294,6 +295,14 @@ export default function HackathonDetailPage() {
               >
                 <Edit className="h-5 w-5" />
                 Editar
+              </Link>
+
+              <Link
+                href={`/hackathones/${hackathon.id}/jueces`}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 transition-colors shadow-lg"
+              >
+                <Shield className="h-5 w-5" />
+                Gestionar Jueces
               </Link>
 
               <button
