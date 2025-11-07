@@ -1,4 +1,4 @@
-import api from './api';
+import axiosInstance from '@/lib/axios';
 
 export interface Judge {
   id: string;
@@ -15,7 +15,7 @@ export interface Judge {
 
 class JudgeService {
   async getAllJudges(token: string): Promise<Judge[]> {
-    const response = await api.get('/auth/judges', {
+    const response = await axiosInstance.get('/auth/judges', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
