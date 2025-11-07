@@ -1,75 +1,100 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import Link from 'next/link';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { authService, User } from '@/services/auth.service';
-import { judgeAssignmentService, JudgeAssignment } from '@/services/judge-assignment.service';
-import { teamService, Team } from '@/services/team.service';
-import toast from 'react-hot-toast';
-import { ArrowLeft, UserPlus, Users, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import DashboardLayout from '@/components/layout/DashboardLayout';
+import { judgeAssignmentService } from '@/services/judge-assignment.service';
+import { authService } from '@/services/auth.service';
+import { judgeService } from '@/services/judge.service';
+import { hackathonService } from '@/services/hackathon.service';
+import { teamService } from '@/services/team.service';
+import { Shield, Trash2, UserCheck } from 'lucide-react';
+
+interface Judge {
+  id: string;
+  usuario: {
+    id: string;
+    nombre: string;
+    email: string;
+  };
+}
+
+interface Team {
+  id: string;
+  nombre: string;
+}
+
+interface JudgeAssignment {
+  id: string;
+  juez: Judge;
+  equipos: Team[];
+}
 
 export default function HackathonJudgesPage() {
-  const router = useRouter();
   const params = useParams();
+  const router = useRouter();
   const hackathonId = params.id as string;
 
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [judges, setJudges] = useState<User[]>([]);
-  const [assignments, setAssignments] = useState<JudgeAssignment[]>([]);
+  const [judges, setJudges] = useState<Judge[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
-  const [showForm, setShowForm] = useState(false);
+  const [assignments, setAssignments] = useState<JudgeAssignment[]>([]);
   const [selectedJudge, setSelectedJudge] = useState('');
-  const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
   const [assignToAll, setAssignToAll] = useState(true);
+  const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [hackathonName, setHackathonName] = useState('');
 
   useEffect(() => {
-    const storedUser = authService.getStoredUser();
-    const storedToken = authService.getToken();
+    loadData();
+  }, [hackathonId]);
 
-    if (!storedUser || !storedToken) {
-      toast.error('Debes iniciar sesión');
-      router.push('/login');
-      return;
-    }
-
-    if (storedUser.role !== 'ORGANIZADOR') {
-      toast.error('No tienes permisos');
-      router.push('/');
-      return;
-    }
-
-    setUser(storedUser);
-    setToken(storedToken);
-    loadData(storedToken);
-  }, [router, hackathonId]);
-
-  const loadData = async (authToken: string) => {
+  const loadData = async () => {
     try {
       setLoading(true);
-      const [judgesData, assignmentsData, teamsData] = await Promise.all([
-        authService.getAllJudges(),
-        judgeAssignmentService.getHackathonJudges(hackathonId, authToken),
-        teamService.getTeamsByHackathon(hackathonId, authToken),
+      const token = authService.getToken();
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
+      const [judgesData, teamsData, assignmentsData, hackathonData] = await Promise.all([
+        judgeService.getAllJudges(token),
+        teamService.getTeamsByHackathon(hackathonId, token),
+        judgeAssignmentService.getHackathonJudges(hackathonId, token),
+        hackathonService.getHackathonById(hackathonId, token),
       ]);
+
       setJudges(judgesData);
-      setAssignments(assignmentsData);
       setTeams(teamsData);
-    } catch (error: any) {
-      toast.error(error.message || 'Error al cargar datos');
+      setAssignments(assignmentsData);
+      setHackathonName(hackathonData.nombre);
+    } catch (err) {
+      console.error('Error loading data:', err);
+      setError('Error al cargar los datos');
     } finally {
       setLoading(false);
     }
   };
 
   const handleAssignJudge = async () => {
-    if (!selectedJudge || !token) return;
+    if (!selectedJudge) {
+      setError('Selecciona un juez');
+      return;
+    }
+
+    if (!assignToAll && selectedTeams.length === 0) {
+      setError('Selecciona al menos un equipo');
+      return;
+    }
 
     try {
-      setLoading(true);
+      const token = authService.getToken();
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
       await judgeAssignmentService.assignJudge(
         {
           juezId: selectedJudge,
@@ -78,157 +103,195 @@ export default function HackathonJudgesPage() {
         },
         token
       );
-      toast.success('Juez asignado exitosamente');
-      setShowForm(false);
+
       setSelectedJudge('');
       setSelectedTeams([]);
-      setAssignToAll(true);
-      await loadData(token);
-    } catch (error: any) {
-      toast.error(error.message || 'Error al asignar juez');
-    } finally {
-      setLoading(false);
+      setError('');
+      await loadData();
+    } catch (err) {
+      console.error('Error assigning judge:', err);
+      setError('Error al asignar el juez');
     }
   };
 
   const handleRemoveAssignment = async (assignmentId: string) => {
-    if (!token || !confirm('¿Remover esta asignación?')) return;
+    if (!confirm('Â¿Estas seguro de eliminar esta asignacion?')) {
+      return;
+    }
 
     try {
+      const token = authService.getToken();
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
       await judgeAssignmentService.removeAssignment(assignmentId, token);
-      toast.success('Asignación removida');
-      await loadData(token);
-    } catch (error: any) {
-      toast.error(error.message || 'Error al remover');
+      await loadData();
+    } catch (err) {
+      console.error('Error removing assignment:', err);
+      setError('Error al eliminar la asignacion');
     }
   };
 
-  const toggleTeam = (teamId: string) => {
-    setSelectedTeams(prev =>
-      prev.includes(teamId) ? prev.filter(id => id !== teamId) : [...prev, teamId]
+  const handleTeamToggle = (teamId: string) => {
+    setSelectedTeams((prev) =>
+      prev.includes(teamId) ? prev.filter((id) => id !== teamId) : [...prev, teamId]
     );
   };
 
-  if (!user || !token) {
+  if (loading) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">
-          <div className="text-gray-200 text-lg">Cargando...</div>
+          <div className="text-gray-200">Cargando...</div>
         </div>
       </DashboardLayout>
     );
   }
 
-  const availableJudges = judges.filter(j => !assignments.some(a => a.juezId === j.id));
-
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div>
-          <Link href={`/hackathones/${hackathonId}`} className="inline-flex items-center gap-2 text-gray-300 hover:text-unicauca-cyan mb-4 transition-colors">
-            <ArrowLeft className="h-4 w-4" />
-            Volver al Hackathon
-          </Link>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-                <Users className="h-8 w-8 text-unicauca-purple" />
-                Gestión de Jueces
-              </h1>
-              <p className="mt-2 text-gray-300">Asigna jueces para evaluar este hackathon</p>
-            </div>
-            {!showForm && availableJudges.length > 0 && (
-              <button onClick={() => setShowForm(true)} className="inline-flex items-center gap-2 px-6 py-3 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 transition-colors font-medium shadow-lg">
-                <UserPlus className="h-5 w-5" />
-                Asignar Juez
-              </button>
-            )}
+        <div className="flex items-center gap-3">
+          <Shield className="h-8 w-8 text-unicauca-purple" />
+          <div>
+            <h1 className="text-3xl font-bold text-white">Gestion de Jueces</h1>
+            <p className="text-gray-300 mt-1">{hackathonName}</p>
           </div>
         </div>
 
-        {showForm && (
-          <div className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 p-6 shadow-lg">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white">Asignar Nuevo Juez</h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-300 hover:text-unicauca-cyan">Cancelar</button>
-            </div>
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-200 mb-2">Seleccionar Juez *</label>
-                <select value={selectedJudge} onChange={(e) => setSelectedJudge(e.target.value)} className="w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg focus:ring-2 focus:ring-unicauca-purple text-white">
-                  <option value="">Selecciona un juez...</option>
-                  {availableJudges.map((judge) => (
-                    <option key={judge.id} value={judge.id}>{judge.nombres} {judge.apellidos} - {judge.email}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <input type="checkbox" id="assignToAll" checked={assignToAll} onChange={(e) => setAssignToAll(e.target.checked)} className="w-4 h-4 text-unicauca-purple rounded" />
-                  <label htmlFor="assignToAll" className="text-sm font-medium text-gray-200">Asignar a todos los equipos</label>
-                </div>
-                {!assignToAll && (
-                  <div className="mt-4 space-y-2">
-                    <label className="block text-sm font-medium text-gray-200 mb-2">Seleccionar Equipos</label>
-                    <div className="max-h-60 overflow-y-auto space-y-2 bg-unicauca-dark p-4 rounded-lg border border-unicauca-purple/20">
-                      {teams.map((team) => (
-                        <label key={team.id} className="flex items-center gap-3 p-2 hover:bg-unicauca-purple/10 rounded cursor-pointer">
-                          <input type="checkbox" checked={selectedTeams.includes(team.id)} onChange={() => toggleTeam(team.id)} className="w-4 h-4" />
-                          <span className="text-gray-200">{team.nombre}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="flex gap-4">
-                <button onClick={handleAssignJudge} disabled={!selectedJudge || loading || (!assignToAll && selectedTeams.length === 0)} className="flex-1 px-6 py-3 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 disabled:opacity-50 shadow-lg">{loading ? 'Asignando...' : 'Asignar Juez'}</button>
-                <button onClick={() => setShowForm(false)} className="px-6 py-3 border border-unicauca-purple/30 text-gray-300 rounded-lg hover:bg-unicauca-dark">Cancelar</button>
-              </div>
-            </div>
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4">
+            <p className="text-red-400">{error}</p>
           </div>
         )}
 
-        <div className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 shadow-lg">
-          <div className="p-6 border-b border-unicauca-purple/30">
-            <h2 className="text-xl font-semibold text-white">Jueces Asignados ({assignments.length})</h2>
-          </div>
-          <div className="p-6">
-            {loading ? (
-              <div className="text-center py-8 text-gray-300">Cargando...</div>
-            ) : assignments.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">No hay jueces asignados aún</div>
-            ) : (
-              <div className="space-y-4">
-                {assignments.map((assignment) => (
-                  <div key={assignment.id} className="bg-unicauca-dark p-4 rounded-lg border border-unicauca-purple/20 hover:border-unicauca-purple/40">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="text-lg font-semibold text-white">{assignment.juez?.nombres} {assignment.juez?.apellidos}</h3>
-                          {assignment.canSeeAllTeams && (
-                            <span className="px-2 py-1 bg-unicauca-cyan/20 text-unicauca-cyan text-xs font-semibold rounded border border-unicauca-cyan/30">Todos los equipos</span>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-400 mb-2">{assignment.juez?.email}</p>
-                        {assignment.assignedTeams && assignment.assignedTeams.length > 0 && (
-                          <div className="mt-3">
-                            <p className="text-sm text-gray-300 mb-2">Equipos:</p>
-                            <div className="flex flex-wrap gap-2">
-                              {assignment.assignedTeams.map((team) => (
-                                <span key={team.id} className="px-3 py-1 bg-unicauca-lavender/20 text-unicauca-lavender text-sm rounded border border-unicauca-lavender/30">{team.nombre}</span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <button onClick={() => handleRemoveAssignment(assignment.id)} className="p-2 text-red-400 hover:bg-red-500/10 rounded"><Trash2 className="h-5 w-5" /></button>
-                    </div>
-                  </div>
+        <div className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 p-6 shadow-lg">
+          <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+            <UserCheck className="h-5 w-5" />
+            Asignar Juez
+          </h2>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-200 mb-2">
+                Seleccionar Juez
+              </label>
+              <select
+                value={selectedJudge}
+                onChange={(e) => setSelectedJudge(e.target.value)}
+                className="w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-unicauca-purple"
+              >
+                <option value="">-- Selecciona un juez --</option>
+                {judges.map((judge) => (
+                  <option key={judge.id} value={judge.id}>
+                    {judge.usuario.nombre} ({judge.usuario.email})
+                  </option>
                 ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 text-gray-200">
+                <input
+                  type="checkbox"
+                  checked={assignToAll}
+                  onChange={(e) => {
+                    setAssignToAll(e.target.checked);
+                    if (e.target.checked) {
+                      setSelectedTeams([]);
+                    }
+                  }}
+                  className="w-4 h-4 text-unicauca-purple bg-unicauca-dark border-unicauca-purple/30 rounded focus:ring-unicauca-purple"
+                />
+                Asignar a todos los equipos
+              </label>
+            </div>
+
+            {!assignToAll && (
+              <div>
+                <label className="block text-sm font-medium text-gray-200 mb-2">
+                  Seleccionar Equipos
+                </label>
+                <div className="space-y-2 max-h-48 overflow-y-auto bg-unicauca-dark rounded-lg p-3 border border-unicauca-purple/30">
+                  {teams.length === 0 ? (
+                    <p className="text-gray-400 text-sm">No hay equipos disponibles</p>
+                  ) : (
+                    teams.map((team) => (
+                      <label
+                        key={team.id}
+                        className="flex items-center gap-2 text-gray-200 hover:bg-unicauca-navy/50 p-2 rounded cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedTeams.includes(team.id)}
+                          onChange={() => handleTeamToggle(team.id)}
+                          className="w-4 h-4 text-unicauca-purple bg-unicauca-dark border-unicauca-purple/30 rounded focus:ring-unicauca-purple"
+                        />
+                        {team.nombre}
+                      </label>
+                    ))
+                  )}
+                </div>
               </div>
             )}
+
+            <button
+              onClick={handleAssignJudge}
+              className="w-full px-4 py-2 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 transition-colors shadow-lg font-medium"
+            >
+              Asignar Juez
+            </button>
           </div>
+        </div>
+
+        <div className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 p-6 shadow-lg">
+          <h2 className="text-xl font-semibold text-white mb-4">Jueces Asignados</h2>
+
+          {assignments.length === 0 ? (
+            <p className="text-gray-400">No hay jueces asignados a este hackathon</p>
+          ) : (
+            <div className="space-y-4">
+              {assignments.map((assignment) => (
+                <div
+                  key={assignment.id}
+                  className="bg-unicauca-dark rounded-lg p-4 border border-unicauca-purple/20"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-medium text-white">
+                        {assignment.juez.usuario.nombre}
+                      </h3>
+                      <p className="text-sm text-gray-400">{assignment.juez.usuario.email}</p>
+                      {assignment.equipos && assignment.equipos.length > 0 && (
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-300">Equipos asignados:</p>
+                          <div className="flex flex-wrap gap-2 mt-1">
+                            {assignment.equipos.map((team) => (
+                              <span
+                                key={team.id}
+                                className="px-2 py-1 bg-unicauca-purple/20 text-unicauca-purple text-xs rounded"
+                              >
+                                {team.nombre}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleRemoveAssignment(assignment.id)}
+                      className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+                      title="Eliminar asignacion"
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>
