@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { judgeAssignmentService } from '@/services/judge-assignment.service';
 import { authService } from '@/services/auth.service';
 import { judgeService } from '@/services/judge.service';
