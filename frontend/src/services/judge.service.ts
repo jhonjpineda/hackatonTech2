@@ -2,15 +2,13 @@ import axiosInstance from '@/lib/axios';
 
 export interface Judge {
   id: string;
-  usuario: {
-    id: string;
-    nombre: string;
-    apellidos: string;
-    email: string;
-    documento: string;
-  };
-  especialidad?: string;
-  experiencia?: string;
+  documento: string;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  telefono?: string;
+  status: string;
+  createdAt: string;
 }
 
 class JudgeService {

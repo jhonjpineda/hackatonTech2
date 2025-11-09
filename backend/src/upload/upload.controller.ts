@@ -65,8 +65,7 @@ export class UploadController {
   }
 
   @Post('pdf')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ORGANIZADOR)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Subir un archivo PDF (para challenges)' })
   @ApiConsumes('multipart/form-data')

@@ -505,5 +505,143 @@ HackatonTech2 - Talento Tech
       html,
     });
   }
+
+  async sendOrganizerCreationEmail(
+    email: string,
+    userName: string,
+    documento: string,
+    temporaryPassword: string,
+  ): Promise<boolean> {
+    const loginUrl = `${this.configService.get<string>('FRONTEND_URL', 'http://localhost:3000')}/login`;
+
+    // En modo MOCK, mostrar las credenciales claramente en los logs
+    if (!this.transporter) {
+      this.logger.warn(`========================================`);
+      this.logger.warn(`[MOCK EMAIL] CREDENCIALES DE ORGANIZADOR`);
+      this.logger.warn(`Usuario: ${userName}`);
+      this.logger.warn(`Email: ${email}`);
+      this.logger.warn(`Documento: ${documento}`);
+      this.logger.warn(`Contraseña Temporal: ${temporaryPassword}`);
+      this.logger.warn(`========================================`);
+    }
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background-color: #b64cff; color: white; padding: 20px; text-align: center; }
+          .content { padding: 20px; background-color: #f9f9f9; }
+          .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #b64cff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 20px 0;
+          }
+          .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
+          .credentials {
+            background-color: #f3e5f5;
+            padding: 15px;
+            border-left: 4px solid #b64cff;
+            margin: 15px 0;
+          }
+          .password {
+            background-color: #fff3e0;
+            padding: 15px;
+            border-left: 4px solid #FF9800;
+            font-family: monospace;
+            font-size: 18px;
+            letter-spacing: 2px;
+          }
+          .warning {
+            background-color: #ffebee;
+            padding: 10px;
+            border-left: 4px solid #f44336;
+            margin: 15px 0;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Bienvenido como Organizador - HackatonTech2</h1>
+          </div>
+          <div class="content">
+            <h2>Hola ${userName},</h2>
+            <p>Has sido designado como <strong>Organizador</strong> en la plataforma HackatonTech2. Tu rol será administrar hackathones, crear retos, asignar jueces y gestionar el sistema.</p>
+
+            <div class="credentials">
+              <h3>Credenciales de Acceso:</h3>
+              <p><strong>Documento de ingreso:</strong> ${documento}</p>
+              <p><strong>Contraseña temporal:</strong></p>
+              <div class="password">${temporaryPassword}</div>
+            </div>
+
+            <div class="warning">
+              <strong>⚠️ Importante:</strong> Por seguridad, deberás cambiar esta contraseña en tu primer inicio de sesión.
+            </div>
+
+            <h3>Tus responsabilidades como Organizador:</h3>
+            <ul>
+              <li>Crear y gestionar hackathones</li>
+              <li>Crear retos y definir criterios de evaluación</li>
+              <li>Asignar jueces a hackathones</li>
+              <li>Gestionar equipos y categorías</li>
+              <li>Supervisar entregas y evaluaciones</li>
+            </ul>
+
+            <a href="${loginUrl}" class="button">Iniciar Sesión</a>
+
+            <p>Si tienes alguna duda, contacta con el administrador principal.</p>
+          </div>
+          <div class="footer">
+            <p>HackatonTech2 - Talento Tech<br>
+            Este es un correo automático, por favor no respondas a este mensaje.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const text = `
+Bienvenido como Organizador - HackatonTech2
+
+Hola ${userName},
+
+Has sido designado como Organizador en la plataforma HackatonTech2.
+
+CREDENCIALES DE ACCESO:
+Documento de ingreso: ${documento}
+Contraseña temporal: ${temporaryPassword}
+
+⚠️ IMPORTANTE: Por seguridad, deberás cambiar esta contraseña en tu primer inicio de sesión.
+
+TUS RESPONSABILIDADES COMO ORGANIZADOR:
+- Crear y gestionar hackathones
+- Crear retos y definir criterios de evaluación
+- Asignar jueces a hackathones
+- Gestionar equipos y categorías
+- Supervisar entregas y evaluaciones
+
+Inicia sesión en: ${loginUrl}
+
+Si tienes alguna duda, contacta con el administrador principal.
+
+HackatonTech2 - Talento Tech
+    `;
+
+    return await this.sendEmail({
+      to: email,
+      subject: 'Bienvenido como Organizador - HackatonTech2',
+      text,
+      html,
+    });
+  }
 }
  

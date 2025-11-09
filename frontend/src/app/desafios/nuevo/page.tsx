@@ -29,6 +29,7 @@ export default function NuevoDesafioPage() {
     dificultad: ChallengeDifficulty.MEDIO,
     estado: ChallengeStatus.DRAFT,
     puntos: undefined,
+    porcentaje: 0,
     criteriosEvaluacion: '',
     recursos: '',
     entregables: '',
@@ -137,7 +138,12 @@ export default function NuevoDesafioPage() {
     let processedValue: any = value;
 
     if (type === 'number') {
-      processedValue = value === '' ? undefined : parseInt(value, 10);
+      if (value === '') {
+        processedValue = name === 'porcentaje' ? 0 : undefined;
+      } else {
+        // Usar parseFloat para porcentaje (permite decimales), parseInt para otros
+        processedValue = name === 'porcentaje' ? parseFloat(value) : parseInt(value, 10);
+      }
     } else if (type === 'datetime-local') {
       processedValue = value;
     }
@@ -362,8 +368,8 @@ export default function NuevoDesafioPage() {
               )}
             </div>
 
-            {/* Dificultad y Puntos */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Dificultad, Puntos y Porcentaje */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Dificultad */}
               <div>
                 <label
@@ -408,6 +414,37 @@ export default function NuevoDesafioPage() {
                 />
                 {errors.puntos && (
                   <p className="mt-1 text-sm text-red-600">{errors.puntos}</p>
+                )}
+              </div>
+
+              {/* Porcentaje */}
+              <div>
+                <label
+                  htmlFor="porcentaje"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Porcentaje (%) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="porcentaje"
+                  name="porcentaje"
+                  value={formData.porcentaje}
+                  onChange={handleChange}
+                  min={0}
+                  max={100}
+                  step={0.01}
+                  required
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.porcentaje ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Ej: 40"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Del total del hackathon (máx. 100%)
+                </p>
+                {errors.porcentaje && (
+                  <p className="mt-1 text-sm text-red-600">{errors.porcentaje}</p>
                 )}
               </div>
             </div>

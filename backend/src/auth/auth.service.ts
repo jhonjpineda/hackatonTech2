@@ -139,6 +139,7 @@ export class AuthService {
         role: true,
         status: true,
         telefono: true,
+        mustChangePassword: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -607,5 +608,129 @@ export class AuthService {
         createdAt: 'DESC',
       },
     });
+  }
+
+  /**
+   * Crear un nuevo organizador (solo ORGANIZADOR puede hacerlo)
+   */
+  async createOrganizer(organizerData: {
+    documento: string;
+    email: string;
+    nombres: string;
+    apellidos: string;
+    telefono?: string;
+  }) {
+    // Verificar si el usuario ya existe
+    const existingUserByDoc = await this.userRepository.findOne({
+      where: { documento: organizerData.documento },
+    });
+
+    if (existingUserByDoc) {
+      throw new ConflictException('Ya existe un usuario con este documento');
+    }
+
+    const existingUserByEmail = await this.userRepository.findOne({
+      where: { email: organizerData.email },
+    });
+
+    if (existingUserByEmail) {
+      throw new ConflictException('Ya existe un usuario con este email');
+    }
+
+    // Generar contraseña temporal
+    const tempPassword = crypto.randomBytes(8).toString('hex');
+    const saltRounds = parseInt(this.configService.get('BCRYPT_SALT_ROUNDS') || '10', 10);
+    const hashedPassword = await bcrypt.hash(tempPassword, saltRounds);
+
+    // Crear usuario con rol ORGANIZADOR
+    const user = this.userRepository.create({
+      documento: organizerData.documento,
+      email: organizerData.email,
+      password: hashedPassword,
+      nombres: organizerData.nombres,
+      apellidos: organizerData.apellidos,
+      telefono: organizerData.telefono,
+      role: UserRole.ORGANIZADOR,
+      status: UserStatus.ACTIVE,
+      mustChangePassword: true,
+      source: UserSource.DIRECT,
+      isFullyRegistered: true,
+    });
+
+    await this.userRepository.save(user);
+
+    // Enviar email con credenciales
+    try {
+      await this.emailService.sendOrganizerCreationEmail(
+        organizerData.email,
+        organizerData.nombres,
+        organizerData.documento,
+        tempPassword,
+      );
+    } catch (error) {
+      console.error('Error enviando email al organizador:', error);
+      // No fallar la creación si el email falla
+    }
+
+    // Retornar usuario sin password
+    const { password: _, ...userWithoutPassword } = user;
+
+    return {
+      user: userWithoutPassword,
+      temporaryPassword: tempPassword, // Solo para mostrar al admin
+    };
+  }
+
+  /**
+   * Obtener todos los organizadores
+   */
+  async getAllOrganizers() {
+    return await this.userRepository.find({
+      where: { role: UserRole.ORGANIZADOR },
+      select: {
+        id: true,
+        documento: true,
+        nombres: true,
+        apellidos: true,
+        email: true,
+        telefono: true,
+        status: true,
+        createdAt: true,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+  }
+
+  async changePassword(userId: string, currentPassword: string | undefined, newPassword: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    // Si el usuario NO está obligado a cambiar contraseña, verificar la actual
+    if (!user.mustChangePassword && currentPassword) {
+      const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      if (!isPasswordValid) {
+        throw new UnauthorizedException('Contraseña actual incorrecta');
+      }
+    }
+
+    // Hash de la nueva contraseña
+    const saltRounds = parseInt(this.configService.get('BCRYPT_SALT_ROUNDS') || '10', 10);
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // Actualizar contraseña y quitar flag de cambio obligatorio
+    user.password = hashedPassword;
+    user.mustChangePassword = false;
+    await this.userRepository.save(user);
+
+    return {
+      message: 'Contraseña actualizada exitosamente',
+    };
   }
 }

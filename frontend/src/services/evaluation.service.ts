@@ -108,6 +108,26 @@ class EvaluationService {
     return response.json();
   }
 
+  async getByJuez(juezId: string): Promise<Evaluation[]> {
+    const response = await fetch(`${API_URL}/evaluations/juez/${juezId}`);
+
+    if (!response.ok) {
+      throw new Error('Error al obtener evaluaciones del juez');
+    }
+
+    return response.json();
+  }
+
+  async getByChallenge(challengeId: string): Promise<Evaluation[]> {
+    const response = await fetch(`${API_URL}/evaluations/challenge/${challengeId}`);
+
+    if (!response.ok) {
+      throw new Error('Error al obtener evaluaciones del reto');
+    }
+
+    return response.json();
+  }
+
   async getTeamScore(teamId: string, challengeId: string, token: string): Promise<TeamScore> {
     const response = await fetch(
       `${API_URL}/evaluations/team/${teamId}/score/${challengeId}`,

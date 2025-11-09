@@ -48,6 +48,9 @@ export class Challenge {
   @Column({ type: 'int', nullable: true })
   puntos?: number;
 
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  porcentaje: number;
+
   @Column({ type: 'text', nullable: true, name: 'criterios_evaluacion' })
   criteriosEvaluacion?: string;
 

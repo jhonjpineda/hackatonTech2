@@ -8,6 +8,10 @@ import { useEffect, useState } from 'react';
 import { Trophy, Users, FolderGit2, TrendingUp, FileText, Award, Clock, CheckCircle } from 'lucide-react';
 import { submissionService } from '@/services/submission.service';
 import { Submission, SubmissionStatus } from '@/types/submission';
+import { hackathonService } from '@/services/hackathonService';
+import { teamService } from '@/services/team.service';
+import { Hackathon } from '@/types/hackathon';
+import { Team } from '@/types/team';
 import Link from 'next/link';
 
 export default function DashboardPage() {
@@ -15,6 +19,9 @@ export default function DashboardPage() {
   const router = useRouter();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loadingSubmissions, setLoadingSubmissions] = useState(true);
+  const [hackathons, setHackathons] = useState<Hackathon[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -25,6 +32,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (user && token) {
       loadMySubmissions();
+      loadDashboardData();
     }
   }, [user, token]);
 
@@ -39,6 +47,24 @@ export default function DashboardPage() {
       console.error('Error al cargar entregas:', error);
     } finally {
       setLoadingSubmissions(false);
+    }
+  };
+
+  const loadDashboardData = async () => {
+    if (!token) return;
+
+    try {
+      setLoadingStats(true);
+      const [hackathonsData, teamsData] = await Promise.all([
+        hackathonService.getPublic(),
+        teamService.getAll(token),
+      ]);
+      setHackathons(hackathonsData);
+      setTeams(teamsData);
+    } catch (error) {
+      console.error('Error al cargar datos del dashboard:', error);
+    } finally {
+      setLoadingStats(false);
     }
   };
 
@@ -97,8 +123,14 @@ export default function DashboardPage() {
               <Trophy className="h-5 w-5 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">3</div>
-              <p className="text-xs text-gray-500 mt-1">+2 desde el mes pasado</p>
+              {loadingStats ? (
+                <div className="text-2xl font-bold text-gray-400">...</div>
+              ) : (
+                <div className="text-2xl font-bold">{hackathons.length}</div>
+              )}
+              <p className="text-xs text-gray-500 mt-1">
+                {hackathons.length === 0 ? 'Sin hackathones disponibles' : 'Disponibles ahora'}
+              </p>
             </CardContent>
           </Card>
 
@@ -110,8 +142,14 @@ export default function DashboardPage() {
               <Users className="h-5 w-5 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">2</div>
-              <p className="text-xs text-gray-500 mt-1">Activos actualmente</p>
+              {loadingStats ? (
+                <div className="text-2xl font-bold text-gray-400">...</div>
+              ) : (
+                <div className="text-2xl font-bold">{teams.length}</div>
+              )}
+              <p className="text-xs text-gray-500 mt-1">
+                {teams.length === 0 ? 'Sin equipos registrados' : teams.length === 1 ? 'Equipo activo' : 'Equipos activos'}
+              </p>
             </CardContent>
           </Card>
 

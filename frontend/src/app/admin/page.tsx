@@ -39,7 +39,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-unicauca-dark py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-brand-dark py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
@@ -54,11 +54,11 @@ export default function AdminDashboardPage() {
           {/* Gestión de Jueces */}
           <Link
             href="/admin/jueces"
-            className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 p-6 hover:shadow-lg hover:border-unicauca-purple hover:shadow-unicauca-purple/20 transition-all"
+            className="bg-brand-navy rounded-lg border border-brand-purple/30 p-6 hover:shadow-lg hover:border-brand-purple hover:shadow-brand-purple/20 transition-all"
           >
             <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-unicauca-purple/20 rounded-lg">
-                <Shield className="h-8 w-8 text-unicauca-purple" />
+              <div className="p-3 bg-brand-purple/20 rounded-lg">
+                <Shield className="h-8 w-8 text-brand-purple" />
               </div>
               <div>
                 <h2 className="text-xl font-semibold text-white">
@@ -69,19 +69,42 @@ export default function AdminDashboardPage() {
             <p className="text-gray-300 mb-4">
               Crear usuarios con rol de juez y asignarlos a hackathones
             </p>
-            <div className="text-unicauca-purple font-medium flex items-center gap-2">
+            <div className="text-brand-purple font-medium flex items-center gap-2">
               Ir a Jueces →
+            </div>
+          </Link>
+
+          {/* Gestión de Organizadores */}
+          <Link
+            href="/admin/organizadores"
+            className="bg-brand-navy rounded-lg border border-brand-cyan/30 p-6 hover:shadow-lg hover:border-brand-cyan hover:shadow-brand-cyan/20 transition-all"
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 bg-brand-cyan/20 rounded-lg">
+                <Shield className="h-8 w-8 text-brand-cyan" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-white">
+                  Gestión de Organizadores
+                </h2>
+              </div>
+            </div>
+            <p className="text-gray-300 mb-4">
+              Crear usuarios con rol de organizador para administrar el sistema
+            </p>
+            <div className="text-brand-cyan font-medium flex items-center gap-2">
+              Ir a Organizadores →
             </div>
           </Link>
 
           {/* Hackathones */}
           <Link
             href="/hackathones"
-            className="bg-unicauca-navy rounded-lg border border-unicauca-lavender/30 p-6 hover:shadow-lg hover:border-unicauca-lavender hover:shadow-unicauca-lavender/20 transition-all"
+            className="bg-brand-navy rounded-lg border border-brand-lavender/30 p-6 hover:shadow-lg hover:border-brand-lavender hover:shadow-brand-lavender/20 transition-all"
           >
             <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-unicauca-lavender/20 rounded-lg">
-                <Calendar className="h-8 w-8 text-unicauca-lavender" />
+              <div className="p-3 bg-brand-lavender/20 rounded-lg">
+                <Calendar className="h-8 w-8 text-brand-lavender" />
               </div>
               <div>
                 <h2 className="text-xl font-semibold text-white">
@@ -92,7 +115,7 @@ export default function AdminDashboardPage() {
             <p className="text-gray-300 mb-4">
               Crear y gestionar hackathones, categorías y configuraciones
             </p>
-            <div className="text-unicauca-lavender font-medium flex items-center gap-2">
+            <div className="text-brand-lavender font-medium flex items-center gap-2">
               Ir a Hackathones →
             </div>
           </Link>
@@ -100,11 +123,11 @@ export default function AdminDashboardPage() {
           {/* Equipos */}
           <Link
             href="/equipos"
-            className="bg-unicauca-navy rounded-lg border border-unicauca-cyan/30 p-6 hover:shadow-lg hover:border-unicauca-cyan hover:shadow-unicauca-cyan/20 transition-all"
+            className="bg-brand-navy rounded-lg border border-brand-cyan/30 p-6 hover:shadow-lg hover:border-brand-cyan hover:shadow-brand-cyan/20 transition-all"
           >
             <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-unicauca-cyan/20 rounded-lg">
-                <Users className="h-8 w-8 text-unicauca-cyan" />
+              <div className="p-3 bg-brand-cyan/20 rounded-lg">
+                <Users className="h-8 w-8 text-brand-cyan" />
               </div>
               <div>
                 <h2 className="text-xl font-semibold text-white">
@@ -115,7 +138,7 @@ export default function AdminDashboardPage() {
             <p className="text-gray-300 mb-4">
               Ver y gestionar todos los equipos registrados
             </p>
-            <div className="text-unicauca-cyan font-medium flex items-center gap-2">
+            <div className="text-brand-cyan font-medium flex items-center gap-2">
               Ir a Equipos →
             </div>
           </Link>
@@ -123,11 +146,11 @@ export default function AdminDashboardPage() {
           {/* Desafíos */}
           <Link
             href="/desafios"
-            className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 p-6 hover:shadow-lg hover:border-unicauca-purple hover:shadow-unicauca-purple/20 transition-all"
+            className="bg-brand-navy rounded-lg border border-brand-purple/30 p-6 hover:shadow-lg hover:border-brand-purple hover:shadow-brand-purple/20 transition-all"
           >
             <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-unicauca-purple/20 rounded-lg">
-                <Target className="h-8 w-8 text-unicauca-purple" />
+              <div className="p-3 bg-brand-purple/20 rounded-lg">
+                <Target className="h-8 w-8 text-brand-purple" />
               </div>
               <div>
                 <h2 className="text-xl font-semibold text-white">
@@ -138,7 +161,7 @@ export default function AdminDashboardPage() {
             <p className="text-gray-300 mb-4">
               Crear y gestionar desafíos para los hackathones
             </p>
-            <div className="text-unicauca-purple font-medium flex items-center gap-2">
+            <div className="text-brand-purple font-medium flex items-center gap-2">
               Ir a Desafíos →
             </div>
           </Link>
@@ -146,7 +169,7 @@ export default function AdminDashboardPage() {
           {/* Configuración */}
           <Link
             href="/settings"
-            className="bg-unicauca-navy rounded-lg border border-gray-500/30 p-6 hover:shadow-lg hover:border-gray-400 hover:shadow-gray-400/20 transition-all"
+            className="bg-brand-navy rounded-lg border border-gray-500/30 p-6 hover:shadow-lg hover:border-gray-400 hover:shadow-gray-400/20 transition-all"
           >
             <div className="flex items-center gap-4 mb-4">
               <div className="p-3 bg-gray-500/20 rounded-lg">
@@ -168,8 +191,8 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Quick Access */}
-        <div className="mt-8 bg-unicauca-purple/10 border-l-4 border-unicauca-purple p-6 rounded-r-lg">
-          <h3 className="text-lg font-semibold text-unicauca-purple mb-2">
+        <div className="mt-8 bg-brand-purple/10 border-l-4 border-brand-purple p-6 rounded-r-lg">
+          <h3 className="text-lg font-semibold text-brand-purple mb-2">
             Acceso Rápido - Gestión de Jueces
           </h3>
           <p className="text-gray-300 mb-4">

@@ -18,6 +18,7 @@ export interface Challenge {
   dificultad: ChallengeDifficulty;
   estado: ChallengeStatus;
   puntos?: number;
+  porcentaje: number;
   criteriosEvaluacion?: string;
   recursos?: string;
   entregables?: string;
@@ -45,6 +46,7 @@ export interface CreateChallengeDto {
   dificultad?: ChallengeDifficulty;
   estado?: ChallengeStatus;
   puntos?: number;
+  porcentaje: number;
   criteriosEvaluacion?: string;
   recursos?: string;
   entregables?: string;

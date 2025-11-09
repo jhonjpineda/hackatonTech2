@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { hackathonService } from '@/services/hackathonService';
 import { challengeService } from '@/services/challenge.service';
+import { judgeAssignmentService } from '@/services/judge-assignment.service';
 import { Hackathon, HackathonStatus, HackathonMode } from '@/types/hackathon';
 import { Challenge } from '@/types/challenge';
 import { useRouter, useParams } from 'next/navigation';
@@ -50,6 +51,7 @@ export default function HackathonDetailPage() {
   } | null>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const [categoriesWithChallenges, setCategoriesWithChallenges] = useState<Map<string, Challenge[]>>(new Map());
+  const [assignedJudges, setAssignedJudges] = useState<any[]>([]);
 
   useEffect(() => {
     if (id && token && user) {
@@ -75,6 +77,16 @@ export default function HackathonDetailPage() {
 
       // Cargar categorías y sus desafíos
       await loadCategoriesAndChallenges(data.id);
+
+      // Cargar jueces asignados si es organizador
+      if (token && user && user.id === data.organizadorId) {
+        try {
+          const judgesData = await judgeAssignmentService.getHackathonJudges(id, token);
+          setAssignedJudges(judgesData);
+        } catch (error) {
+          console.error('Error al cargar jueces asignados:', error);
+        }
+      }
     } catch (error: any) {
       toast.error(error.message || 'Error al cargar el hackathon');
       router.push('/hackathones');
@@ -299,7 +311,7 @@ export default function HackathonDetailPage() {
 
               <Link
                 href={`/hackathones/${hackathon.id}/jueces`}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 transition-colors shadow-lg"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-brand-purple text-white rounded-lg hover:bg-brand-purple/80 transition-colors shadow-lg"
               >
                 <Shield className="h-5 w-5" />
                 Gestionar Jueces
@@ -542,6 +554,46 @@ export default function HackathonDetailPage() {
             <p className="text-gray-700 whitespace-pre-wrap">
               {hackathon.premios}
             </p>
+          </div>
+        )}
+
+        {/* Jueces Asignados - Solo visible para el organizador */}
+        {user && hackathon.organizadorId === user.id && assignedJudges.length > 0 && (
+          <div className="bg-brand-navy rounded-lg border border-brand-purple/30 p-6">
+            <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+              <Shield className="h-6 w-6 text-brand-purple" />
+              Jueces Asignados ({assignedJudges.length})
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {assignedJudges.map((assignment) => (
+                <div
+                  key={assignment.id}
+                  className="bg-brand-dark rounded-lg p-4 border border-brand-purple/20"
+                >
+                  <h3 className="font-semibold text-white text-base">
+                    {assignment.juez.nombres} {assignment.juez.apellidos}
+                  </h3>
+                  <p className="text-sm text-gray-300 mt-1">{assignment.juez.email}</p>
+                  {assignment.equipos && assignment.equipos.length > 0 ? (
+                    <div className="mt-2">
+                      <p className="text-xs text-gray-400 mb-1">Equipos asignados:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {assignment.equipos.map((team: any) => (
+                          <span
+                            key={team.id}
+                            className="px-2 py-0.5 bg-brand-purple/20 text-brand-cyan text-xs rounded"
+                          >
+                            {team.nombre}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-brand-cyan mt-2">✓ Todos los equipos</p>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

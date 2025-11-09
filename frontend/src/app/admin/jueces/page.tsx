@@ -155,7 +155,7 @@ export default function AdminJuecesPage() {
         <div>
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-gray-300 hover:text-unicauca-cyan mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-gray-300 hover:text-brand-cyan mb-4 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver al Dashboard
@@ -164,7 +164,7 @@ export default function AdminJuecesPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-                <Users className="h-8 w-8 text-unicauca-purple" />
+                <Users className="h-8 w-8 text-brand-purple" />
                 Gestión de Jueces
               </h1>
               <p className="mt-2 text-gray-300">
@@ -175,7 +175,7 @@ export default function AdminJuecesPage() {
             {!showForm && (
               <button
                 onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 transition-colors font-medium shadow-lg"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-purple text-white rounded-lg hover:bg-brand-purple/80 transition-colors font-medium shadow-lg"
               >
                 <UserPlus className="h-5 w-5" />
                 Crear Juez
@@ -186,12 +186,12 @@ export default function AdminJuecesPage() {
 
         {/* Form */}
         {showForm && !createdJudge && (
-          <div className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 p-6 mb-8 shadow-lg">
+          <div className="bg-brand-navy rounded-lg border border-brand-purple/30 p-6 mb-8 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-white">Nuevo Juez</h2>
               <button
                 onClick={() => setShowForm(false)}
-                className="text-gray-300 hover:text-unicauca-cyan transition-colors"
+                className="text-gray-300 hover:text-brand-cyan transition-colors"
               >
                 Cancelar
               </button>
@@ -210,7 +210,7 @@ export default function AdminJuecesPage() {
                       id="documento"
                       value={formData.documento}
                       onChange={(e) => setFormData({ ...formData, documento: e.target.value })}
-                      className="pl-10 w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg focus:ring-2 focus:ring-unicauca-purple focus:border-unicauca-purple text-white placeholder-gray-400"
+                      className="pl-10 w-full px-4 py-2 bg-brand-dark border border-brand-purple/30 rounded-lg focus:ring-2 focus:ring-brand-purple focus:border-brand-purple text-white placeholder-gray-400"
                       placeholder="Ej: 1234567890"
                       required
                     />
@@ -228,7 +228,7 @@ export default function AdminJuecesPage() {
                       id="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="pl-10 w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg focus:ring-2 focus:ring-unicauca-purple focus:border-unicauca-purple text-white placeholder-gray-400"
+                      className="pl-10 w-full px-4 py-2 bg-brand-dark border border-brand-purple/30 rounded-lg focus:ring-2 focus:ring-brand-purple focus:border-brand-purple text-white placeholder-gray-400"
                       placeholder="juez@example.com"
                       required
                     />
@@ -244,7 +244,7 @@ export default function AdminJuecesPage() {
                     id="nombres"
                     value={formData.nombres}
                     onChange={(e) => setFormData({ ...formData, nombres: e.target.value })}
-                    className="w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg focus:ring-2 focus:ring-unicauca-purple focus:border-unicauca-purple text-white placeholder-gray-400"
+                    className="w-full px-4 py-2 bg-brand-dark border border-brand-purple/30 rounded-lg focus:ring-2 focus:ring-brand-purple focus:border-brand-purple text-white placeholder-gray-400"
                     placeholder="Juan Carlos"
                     required
                   />
@@ -259,7 +259,7 @@ export default function AdminJuecesPage() {
                     id="apellidos"
                     value={formData.apellidos}
                     onChange={(e) => setFormData({ ...formData, apellidos: e.target.value })}
-                    className="w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg focus:ring-2 focus:ring-unicauca-purple focus:border-unicauca-purple text-white placeholder-gray-400"
+                    className="w-full px-4 py-2 bg-brand-dark border border-brand-purple/30 rounded-lg focus:ring-2 focus:ring-brand-purple focus:border-brand-purple text-white placeholder-gray-400"
                     placeholder="Pérez García"
                     required
                   />
@@ -276,16 +276,16 @@ export default function AdminJuecesPage() {
                       id="telefono"
                       value={formData.telefono}
                       onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
-                      className="pl-10 w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg focus:ring-2 focus:ring-unicauca-purple focus:border-unicauca-purple text-white placeholder-gray-400"
+                      className="pl-10 w-full px-4 py-2 bg-brand-dark border border-brand-purple/30 rounded-lg focus:ring-2 focus:ring-brand-purple focus:border-brand-purple text-white placeholder-gray-400"
                       placeholder="+57 300 123 4567"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-unicauca-purple/10 border-l-4 border-unicauca-purple p-4 rounded-r">
+              <div className="bg-brand-purple/10 border-l-4 border-brand-purple p-4 rounded-r">
                 <p className="text-sm text-gray-200">
-                  <strong className="text-unicauca-purple">Nota:</strong> Se generará una contraseña temporal que se enviará por email al juez.
+                  <strong className="text-brand-purple">Nota:</strong> Se generará una contraseña temporal que se enviará por email al juez.
                   El juez deberá cambiar su contraseña en el primer inicio de sesión.
                 </p>
               </div>
@@ -294,14 +294,14 @@ export default function AdminJuecesPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 transition-colors font-medium disabled:opacity-50 shadow-lg"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-purple text-white rounded-lg hover:bg-brand-purple/80 transition-colors font-medium disabled:opacity-50 shadow-lg"
                 >
                   {loading ? 'Creando...' : 'Crear Juez'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-6 py-3 border border-unicauca-purple/30 text-gray-300 rounded-lg hover:bg-unicauca-dark transition-colors font-medium"
+                  className="px-6 py-3 border border-brand-purple/30 text-gray-300 rounded-lg hover:bg-brand-dark transition-colors font-medium"
                 >
                   Cancelar
                 </button>
@@ -313,13 +313,13 @@ export default function AdminJuecesPage() {
         {/* Password Modal */}
         {createdJudge && showPassword && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
-            <div className="bg-unicauca-navy rounded-lg max-w-md w-full p-6 border border-unicauca-purple/50 shadow-2xl">
+            <div className="bg-brand-navy rounded-lg max-w-md w-full p-6 border border-brand-purple/50 shadow-2xl">
               <h3 className="text-xl font-semibold text-white mb-4">
                 Juez Creado Exitosamente
               </h3>
 
               <div className="space-y-4">
-                <div className="bg-unicauca-purple/20 border border-unicauca-purple rounded-lg p-4">
+                <div className="bg-brand-purple/20 border border-brand-purple rounded-lg p-4">
                   <p className="text-sm font-medium text-white mb-2">
                     Juez: {createdJudge.user.nombres} {createdJudge.user.apellidos}
                   </p>
@@ -331,17 +331,17 @@ export default function AdminJuecesPage() {
                   </p>
                 </div>
 
-                <div className="bg-unicauca-cyan/10 border border-unicauca-cyan rounded-lg p-4">
-                  <p className="text-sm font-medium text-unicauca-cyan mb-2">
+                <div className="bg-brand-cyan/10 border border-brand-cyan rounded-lg p-4">
+                  <p className="text-sm font-medium text-brand-cyan mb-2">
                     Contraseña Temporal:
                   </p>
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 px-3 py-2 bg-unicauca-dark border border-unicauca-cyan/30 rounded font-mono text-sm text-white">
+                    <code className="flex-1 px-3 py-2 bg-brand-dark border border-brand-cyan/30 rounded font-mono text-sm text-white">
                       {createdJudge.temporaryPassword}
                     </code>
                     <button
                       onClick={copyPassword}
-                      className="p-2 bg-unicauca-cyan text-unicauca-dark rounded hover:bg-unicauca-cyan/80 transition-colors"
+                      className="p-2 bg-brand-cyan text-brand-dark rounded hover:bg-brand-cyan/80 transition-colors"
                       title="Copiar contraseña"
                     >
                       {copiedPassword ? (
@@ -363,7 +363,7 @@ export default function AdminJuecesPage() {
 
               <button
                 onClick={closePasswordModal}
-                className="w-full mt-6 px-6 py-3 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 transition-colors font-medium shadow-lg"
+                className="w-full mt-6 px-6 py-3 bg-brand-purple text-white rounded-lg hover:bg-brand-purple/80 transition-colors font-medium shadow-lg"
               >
                 Cerrar
               </button>
@@ -372,8 +372,8 @@ export default function AdminJuecesPage() {
         )}
 
         {/* Judges List */}
-        <div className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 shadow-lg">
-          <div className="p-6 border-b border-unicauca-purple/30">
+        <div className="bg-brand-navy rounded-lg border border-brand-purple/30 shadow-lg">
+          <div className="p-6 border-b border-brand-purple/30">
             <h2 className="text-xl font-semibold text-white">
               Jueces Registrados ({judges.length})
             </h2>
@@ -391,7 +391,7 @@ export default function AdminJuecesPage() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-unicauca-dark">
+                  <thead className="bg-brand-dark">
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                         Nombre
@@ -413,9 +413,9 @@ export default function AdminJuecesPage() {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-unicauca-purple/20">
+                  <tbody className="divide-y divide-brand-purple/20">
                     {judges.map((judge) => (
-                      <tr key={judge.id} className="hover:bg-unicauca-dark/50 transition-colors">
+                      <tr key={judge.id} className="hover:bg-brand-dark/50 transition-colors">
                         <td className="px-4 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-white">
                             {judge.nombres} {judge.apellidos}
@@ -442,7 +442,7 @@ export default function AdminJuecesPage() {
                         <td className="px-4 py-4 whitespace-nowrap text-sm">
                           <Link
                             href={`/admin/jueces/${judge.id}/asignaciones`}
-                            className="text-unicauca-cyan hover:text-unicauca-cyan/80 font-medium transition-colors"
+                            className="text-brand-cyan hover:text-brand-cyan/80 font-medium transition-colors"
                           >
                             Ver Asignaciones
                           </Link>

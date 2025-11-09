@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Universidad del Cauca Brand Colors
-        unicauca: {
+        // Brand Colors
+        brand: {
           purple: '#b64cff',
           cyan: '#00ffff',
           lavender: '#9fa4ff',
@@ -24,12 +24,12 @@ module.exports = {
           200: '#bae6fd',
           300: '#7dd3fc',
           400: '#38bdf8',
-          500: '#b64cff', // Using UniCauca purple as primary
+          500: '#b64cff', // Using brand purple as primary
           600: '#9333ea',
           700: '#7e22ce',
           800: '#6b21a8',
-          900: '#2b1f73', // Using UniCauca text-dark
-          950: '#12013e', // Using UniCauca dark
+          900: '#2b1f73', // Using brand text-dark
+          950: '#12013e', // Using brand dark
         },
         secondary: {
           50: '#faf5ff',
@@ -37,7 +37,7 @@ module.exports = {
           200: '#e9d5ff',
           300: '#d8b4fe',
           400: '#c084fc',
-          500: '#9fa4ff', // Using UniCauca lavender
+          500: '#9fa4ff', // Using brand lavender
           600: '#9333ea',
           700: '#7e22ce',
           800: '#6b21a8',

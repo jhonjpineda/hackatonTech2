@@ -8,12 +8,14 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Put,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RegisterWithSigaDto, CompleteRegistrationDto, VerifyTokenDto } from './dto/register-with-siga.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { Roles } from './decorators/roles.decorator';
@@ -239,5 +241,73 @@ export class AuthController {
   })
   async getAllJudges() {
     return this.authService.getAllJudges();
+  }
+
+  @Post('create-organizer')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ORGANIZADOR)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Crear usuario con rol ORGANIZADOR (solo ORGANIZADOR)' })
+  @ApiResponse({
+    status: 201,
+    description: 'Organizador creado exitosamente',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Usuario ya existe',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tiene permisos para crear organizadores',
+  })
+  async createOrganizer(
+    @Body()
+    organizerData: {
+      documento: string;
+      email: string;
+      nombres: string;
+      apellidos: string;
+      telefono?: string;
+    },
+  ) {
+    return this.authService.createOrganizer(organizerData);
+  }
+
+  @Get('organizers')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ORGANIZADOR)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Obtener todos los organizadores (solo ORGANIZADOR)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de organizadores',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tiene permisos para ver organizadores',
+  })
+  async getAllOrganizers() {
+    return this.authService.getAllOrganizers();
+  }
+
+  @Put('change-password')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Cambiar contraseña' })
+  @ApiResponse({
+    status: 200,
+    description: 'Contraseña actualizada exitosamente',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Contraseña actual incorrecta o no autorizado',
+  })
+  async changePassword(@Request() req, @Body() changePasswordDto: ChangePasswordDto) {
+    return this.authService.changePassword(
+      req.user.sub,
+      changePasswordDto.currentPassword,
+      changePasswordDto.newPassword,
+    );
   }
 }

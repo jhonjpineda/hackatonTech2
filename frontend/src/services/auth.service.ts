@@ -31,6 +31,7 @@ export interface User {
   role: 'CAMPISTA' | 'JUEZ' | 'ORGANIZADOR';
   status: string;
   telefono?: string;
+  mustChangePassword?: boolean;
   interestTopics?: Topic[];
   createdAt: string;
   updatedAt: string;
@@ -138,6 +139,18 @@ class AuthService {
 
   async getAllJudges(): Promise<User[]> {
     const response = await axiosInstance.get('/auth/judges');
+    return response.data;
+  }
+
+  async changePassword(currentPassword: string | undefined, newPassword: string): Promise<{ message: string }> {
+    const payload: any = { newPassword };
+
+    // Solo incluir currentPassword si está definido
+    if (currentPassword) {
+      payload.currentPassword = currentPassword;
+    }
+
+    const response = await axiosInstance.put('/auth/change-password', payload);
     return response.data;
   }
 }

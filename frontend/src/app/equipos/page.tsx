@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { teamService } from '@/services/team.service';
+import { judgeAssignmentService } from '@/services/judge-assignment.service';
 import { Team } from '@/types/team';
 import { Users, Plus, Search, UserPlus, Trash2, Crown, Mail } from 'lucide-react';
 import Link from 'next/link';
@@ -33,7 +34,31 @@ export default function EquiposPage() {
     try {
       setLoading(true);
       setHasError(false);
-      const data = await teamService.getAll(token);
+
+      let data: Team[] = [];
+
+      // Si es JUEZ, solo cargar equipos de hackathones asignados
+      if (user?.role === 'JUEZ') {
+        const assignments = await judgeAssignmentService.getMyAssignments(token);
+
+        // Obtener equipos de cada hackathon asignado
+        const teamsPromises = assignments
+          .filter(assignment => assignment.hackathonId)
+          .map(assignment =>
+            teamService.getTeamsByHackathon(assignment.hackathonId, token)
+          );
+
+        const teamsArrays = await Promise.all(teamsPromises);
+        // Aplanar array y eliminar duplicados
+        const allTeams = teamsArrays.flat();
+        const uniqueTeamsMap = new Map();
+        allTeams.forEach(team => uniqueTeamsMap.set(team.id, team));
+        data = Array.from(uniqueTeamsMap.values());
+      } else {
+        // Para otros roles, cargar todos los equipos
+        data = await teamService.getAll(token);
+      }
+
       setTeams(data || []);
     } catch (error: any) {
       console.error('Error al cargar equipos:', error);
@@ -104,16 +129,20 @@ export default function EquiposPage() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Equipos</h1>
             <p className="mt-1 text-gray-600">
-              Gestiona tus equipos para los hackathones
+              {user?.role === 'JUEZ'
+                ? 'Equipos de los hackathones donde eres juez'
+                : 'Gestiona tus equipos para los hackathones'}
             </p>
           </div>
-          <Link
-            href="/equipos/nuevo"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="h-5 w-5" />
-            Crear Equipo
-          </Link>
+          {user?.role !== 'JUEZ' && (
+            <Link
+              href="/equipos/nuevo"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="h-5 w-5" />
+              Crear Equipo
+            </Link>
+          )}
         </div>
 
         {/* Búsqueda */}
@@ -200,9 +229,11 @@ export default function EquiposPage() {
             <p className="text-gray-600 mb-4">
               {searchTerm
                 ? 'No se encontraron equipos con ese nombre'
+                : user?.role === 'JUEZ'
+                ? 'No hay equipos en tus hackathones asignados'
                 : 'Crea tu primer equipo para empezar'}
             </p>
-            {!searchTerm && (
+            {!searchTerm && user?.role !== 'JUEZ' && (
               <Link
                 href="/equipos/nuevo"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"

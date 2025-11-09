@@ -83,12 +83,12 @@ export default function SettingsPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <SettingsIcon className="h-8 w-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <SettingsIcon className="h-8 w-8 text-[#b64cff]" />
+            <h1 className="text-3xl font-bold text-white">
               Configuración
             </h1>
           </div>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-300">
             Gestiona tu información personal y preferencias
           </p>
         </div>
@@ -107,63 +107,63 @@ export default function SettingsPage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Nombres</Label>
+                    <Label className="text-gray-200">Nombres</Label>
                     <Input
                       value={user.nombres}
                       disabled
-                      className="bg-gray-50 dark:bg-gray-800"
+                      className="bg-[#1d1d3e] border-[#b64cff]/30 text-white"
                     />
                   </div>
                   <div>
-                    <Label>Apellidos</Label>
+                    <Label className="text-gray-200">Apellidos</Label>
                     <Input
                       value={user.apellidos}
                       disabled
-                      className="bg-gray-50 dark:bg-gray-800"
+                      className="bg-[#1d1d3e] border-[#b64cff]/30 text-white"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label className="flex items-center gap-2">
+                  <Label className="flex items-center gap-2 text-gray-200">
                     <CreditCard className="h-4 w-4" />
                     Documento
                   </Label>
                   <Input
                     value={user.documento}
                     disabled
-                    className="bg-gray-50 dark:bg-gray-800"
+                    className="bg-[#1d1d3e] border-[#b64cff]/30 text-white"
                   />
                 </div>
 
                 <div>
-                  <Label className="flex items-center gap-2">
+                  <Label className="flex items-center gap-2 text-gray-200">
                     <Mail className="h-4 w-4" />
                     Email
                   </Label>
                   <Input
                     value={user.email}
                     disabled
-                    className="bg-gray-50 dark:bg-gray-800"
+                    className="bg-[#1d1d3e] border-[#b64cff]/30 text-white"
                   />
                 </div>
 
                 {user.telefono && (
                   <div>
-                    <Label className="flex items-center gap-2">
+                    <Label className="flex items-center gap-2 text-gray-200">
                       <Phone className="h-4 w-4" />
                       Teléfono
                     </Label>
                     <Input
                       value={user.telefono}
                       disabled
-                      className="bg-gray-50 dark:bg-gray-800"
+                      className="bg-[#1d1d3e] border-[#b64cff]/30 text-white"
                     />
                   </div>
                 )}
 
-                <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="pt-4 border-t border-[#b64cff]/30">
+                  <p className="text-sm text-gray-300">
                     💡 Los datos personales provienen de SIGA y no pueden ser modificados aquí.
                   </p>
                 </div>
@@ -178,7 +178,7 @@ export default function SettingsPage() {
               <CardContent>
                 {user.interestTopics && user.interestTopics.length > 0 ? (
                   <>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    <p className="text-sm text-gray-300 mb-4">
                       Estos son los temas que te interesan según tu perfil de SIGA:
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -186,31 +186,35 @@ export default function SettingsPage() {
                         <Badge
                           key={topic.id}
                           variant="default"
-                          className="text-sm px-3 py-1"
+                          className="text-sm px-3 py-1 bg-[#b64cff]/20 text-[#00ffff] border-[#b64cff]/40"
                         >
                           {topic.nombre}
                         </Badge>
                       ))}
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-4">
+                    <p className="text-xs text-gray-400 mt-4">
                       Los hackathones se asignarán automáticamente según estos temas de interés.
                     </p>
                   </>
                 ) : (
                   <div className="text-center py-6">
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    <p className="text-gray-300 mb-4">
                       No tienes temas de interés configurados
                     </p>
-                    <Button
-                      onClick={handleSyncTopics}
-                      disabled={loading}
-                      className="mx-auto"
-                    >
-                      {loading ? 'Sincronizando...' : 'Sincronizar desde SIGA'}
-                    </Button>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
-                      Sincroniza tus temas de interés desde tu perfil de SIGA
-                    </p>
+                    {user.role !== 'JUEZ' && (
+                      <>
+                        <Button
+                          onClick={handleSyncTopics}
+                          disabled={loading}
+                          className="mx-auto bg-[#b64cff] hover:bg-[#b64cff]/80 text-white"
+                        >
+                          {loading ? 'Sincronizando...' : 'Sincronizar desde SIGA'}
+                        </Button>
+                        <p className="text-xs text-gray-400 mt-3">
+                          Sincroniza tus temas de interés desde tu perfil de SIGA
+                        </p>
+                      </>
+                    )}
                   </div>
                 )}
               </CardContent>
@@ -226,26 +230,26 @@ export default function SettingsPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  <p className="text-xs text-gray-400 mb-1">
                     Rol
                   </p>
                   <Badge
-                    variant={
+                    className={
                       user.role === 'ORGANIZADOR'
-                        ? 'default'
+                        ? 'bg-[#b64cff] text-white'
                         : user.role === 'JUEZ'
-                        ? 'secondary'
-                        : 'outline'
+                        ? 'bg-[#00ffff]/20 text-[#00ffff] border-[#00ffff]/40'
+                        : 'bg-gray-700 text-gray-300'
                     }
                   >
                     {user.role}
                   </Badge>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  <p className="text-xs text-gray-400 mb-1">
                     Estado
                   </p>
-                  <Badge variant="success">{user.status}</Badge>
+                  <Badge className="bg-green-600/20 text-green-400 border-green-600/40">{user.status}</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -260,10 +264,10 @@ export default function SettingsPage() {
               </CardHeader>
               <CardContent className="space-y-3 text-sm">
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  <p className="text-xs text-gray-400 mb-1">
                     Cuenta creada
                   </p>
-                  <p className="text-gray-900 dark:text-white">
+                  <p className="text-white">
                     {new Date(user.createdAt).toLocaleDateString('es-ES', {
                       year: 'numeric',
                       month: 'long',
@@ -272,10 +276,10 @@ export default function SettingsPage() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  <p className="text-xs text-gray-400 mb-1">
                     Última actualización
                   </p>
-                  <p className="text-gray-900 dark:text-white">
+                  <p className="text-white">
                     {new Date(user.updatedAt).toLocaleDateString('es-ES', {
                       year: 'numeric',
                       month: 'long',
@@ -296,7 +300,7 @@ export default function SettingsPage() {
                   onClick={handleRefresh}
                   disabled={loading}
                   variant="outline"
-                  className="w-full"
+                  className="w-full border-[#b64cff] text-white hover:bg-[#b64cff]/20"
                 >
                   {loading ? 'Actualizando...' : 'Actualizar Información'}
                 </Button>
@@ -307,17 +311,17 @@ export default function SettingsPage() {
 
         {/* Información adicional */}
         <div className="mt-8">
-          <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+          <Card className="bg-[#b64cff]/10 border-[#b64cff]/30">
             <CardContent className="py-4">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 mt-1">
-                  <MapPin className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <MapPin className="h-5 w-5 text-[#00ffff]" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
+                  <h3 className="font-semibold text-white mb-1">
                     Integración con SIGA
                   </h3>
-                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                  <p className="text-sm text-gray-300">
                     Tu cuenta está vinculada con el sistema SIGA de TalentoTech. Los temas de
                     interés y datos personales se sincronizan automáticamente desde tu perfil SIGA.
                     Los hackathones disponibles se filtran según tus temas de interés.

@@ -4,28 +4,57 @@
 
 @layer base {
   :root {
-    /* Universidad del Cauca Brand Colors */
-    --color-unicauca-purple: #b64cff;
-    --color-unicauca-cyan: #00ffff;
-    --color-unicauca-lavender: #9fa4ff;
-    --color-unicauca-dark: #12013e;
-    --color-unicauca-navy: #1d1d3e;
-    --color-unicauca-text-dark: #2b1f73;
-    --color-unicauca-text-darker: #312a72;
+    /* Brand Colors */
+    --color-primary-purple: #b64cff;
+    --color-primary-cyan: #00ffff;
+    --color-primary-lavender: #9fa4ff;
+    --color-bg-dark: #12013e;
+    --color-bg-navy: #1d1d3e;
+    --color-text-dark: #2b1f73;
+    --color-text-darker: #312a72;
 
-    /* Font variables - for now using Nunito Sans as fallback for display */
-    --font-hey-august: var(--font-nunito-sans);
+    /* Font variables */
+    --font-display: var(--font-nunito-sans);
   }
 
-  /* Apply Universidad del Cauca styling to headings */
+  /* Styling for headings */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-hey-august), system-ui, sans-serif;
+    font-family: var(--font-display), system-ui, sans-serif;
     font-weight: 700;
   }
 
   /* Dark background for the app */
   body {
-    background-color: var(--color-unicauca-dark);
+    background-color: var(--color-bg-dark);
     color: #ffffff;
+  }
+
+  /* Fix form elements text color */
+  input,
+  select,
+  textarea {
+    color: #1f2937 !important; /* text-gray-800 */
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #9ca3af !important; /* text-gray-400 */
+  }
+
+  /* Dark form elements (specific classes) */
+  input.bg-\[#12013e\],
+  input.bg-\[#1d1d3e\],
+  select.bg-\[#12013e\],
+  select.bg-\[#1d1d3e\],
+  textarea.bg-\[#12013e\],
+  textarea.bg-\[#1d1d3e\] {
+    color: #ffffff !important;
+  }
+
+  input.bg-\[#12013e\]::placeholder,
+  input.bg-\[#1d1d3e\]::placeholder,
+  textarea.bg-\[#12013e\]::placeholder,
+  textarea.bg-\[#1d1d3e\]::placeholder {
+    color: #6b7280 !important; /* text-gray-500 */
   }
 }

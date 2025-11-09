@@ -54,20 +54,20 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#12013e] to-[#1d1d3e] p-4">
+      <Card className="w-full max-w-md bg-[#1d1d3e] border-[#b64cff]/30">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
+          <CardTitle className="text-2xl font-bold text-center text-white">
             Iniciar Sesión
           </CardTitle>
-          <CardDescription className="text-center">
+          <CardDescription className="text-center text-gray-300">
             Ingresa tus credenciales para acceder a HackatonTech2
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="documento">Documento de Identidad</Label>
+              <Label htmlFor="documento" className="text-gray-200">Documento de Identidad</Label>
               <Input
                 id="documento"
                 name="documento"
@@ -76,15 +76,15 @@ export default function LoginPage() {
                 value={formData.documento}
                 onChange={handleChange}
                 disabled={loading}
-                className={errors.documento ? 'border-red-500' : ''}
+                className={`bg-[#12013e] border-[#b64cff]/30 text-white placeholder:text-gray-500 ${errors.documento ? 'border-red-500' : ''}`}
               />
               {errors.documento && (
-                <p className="text-sm text-red-500">{errors.documento}</p>
+                <p className="text-sm text-red-400">{errors.documento}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Contraseña</Label>
+              <Label htmlFor="password" className="text-gray-200">Contraseña</Label>
               <Input
                 id="password"
                 name="password"
@@ -93,16 +93,16 @@ export default function LoginPage() {
                 value={formData.password}
                 onChange={handleChange}
                 disabled={loading}
-                className={errors.password ? 'border-red-500' : ''}
+                className={`bg-[#12013e] border-[#b64cff]/30 text-white placeholder:text-gray-500 ${errors.password ? 'border-red-500' : ''}`}
               />
               {errors.password && (
-                <p className="text-sm text-red-500">{errors.password}</p>
+                <p className="text-sm text-red-400">{errors.password}</p>
               )}
             </div>
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-[#b64cff] hover:bg-[#b64cff]/80 text-white font-semibold"
               disabled={loading}
             >
               {loading ? (
@@ -116,10 +116,10 @@ export default function LoginPage() {
             </Button>
 
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">¿No tienes una cuenta? </span>
+              <span className="text-gray-300">¿No tienes una cuenta? </span>
               <Link
                 href="/register"
-                className="text-primary hover:underline font-medium"
+                className="text-[#00ffff] hover:underline font-medium"
               >
                 Regístrate aquí
               </Link>

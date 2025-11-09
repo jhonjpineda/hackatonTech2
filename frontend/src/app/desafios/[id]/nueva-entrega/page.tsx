@@ -29,7 +29,9 @@ export default function NuevaEntregaPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     teamId: '',
-    observaciones: '',
+    titulo: '',
+    descripcion: '',
+    comentarios: '',
   });
 
   useEffect(() => {
@@ -107,6 +109,16 @@ export default function NuevaEntregaPage() {
       return;
     }
 
+    if (!formData.titulo.trim()) {
+      toast.error('Debes ingresar un título');
+      return;
+    }
+
+    if (!formData.descripcion.trim()) {
+      toast.error('Debes ingresar una descripción');
+      return;
+    }
+
     if (!selectedFile) {
       toast.error('Debes seleccionar un archivo PDF');
       return;
@@ -138,10 +150,12 @@ export default function NuevaEntregaPage() {
 
       // Luego crear la submission
       const submissionData = {
+        titulo: formData.titulo,
+        descripcion: formData.descripcion,
         challengeId: challenge.id,
         teamId: formData.teamId,
-        urlArchivo: pdfUrl,
-        observaciones: formData.observaciones || undefined,
+        documentacionUrl: pdfUrl, // El PDF va como documentación
+        comentarios: formData.comentarios || undefined,
       };
 
       const submission = await submissionService.create(submissionData, token);
@@ -252,10 +266,43 @@ export default function NuevaEntregaPage() {
                   </p>
                 </div>
 
+                {/* Título */}
+                <div>
+                  <Label htmlFor="titulo">
+                    Título de la Entrega <span className="text-red-500">*</span>
+                  </Label>
+                  <input
+                    id="titulo"
+                    type="text"
+                    value={formData.titulo}
+                    onChange={(e) => setFormData(prev => ({ ...prev, titulo: e.target.value }))}
+                    placeholder="Ej: Sistema de Gestión de Inventario"
+                    required
+                    maxLength={200}
+                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                {/* Descripción */}
+                <div>
+                  <Label htmlFor="descripcion">
+                    Descripción <span className="text-red-500">*</span>
+                  </Label>
+                  <textarea
+                    id="descripcion"
+                    value={formData.descripcion}
+                    onChange={(e) => setFormData(prev => ({ ...prev, descripcion: e.target.value }))}
+                    placeholder="Describe tu solución al reto..."
+                    rows={4}
+                    required
+                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  />
+                </div>
+
                 {/* Subir archivo */}
                 <div>
                   <Label htmlFor="file">
-                    Archivo PDF <span className="text-red-500">*</span>
+                    Archivo PDF (Documentación) <span className="text-red-500">*</span>
                   </Label>
                   <div className="mt-1">
                     <label
@@ -296,20 +343,20 @@ export default function NuevaEntregaPage() {
                   </div>
                 </div>
 
-                {/* Observaciones */}
+                {/* Comentarios Adicionales */}
                 <div>
-                  <Label htmlFor="observaciones">Observaciones (opcional)</Label>
+                  <Label htmlFor="comentarios">Comentarios Adicionales (opcional)</Label>
                   <textarea
-                    id="observaciones"
-                    value={formData.observaciones}
-                    onChange={(e) => setFormData(prev => ({ ...prev, observaciones: e.target.value }))}
+                    id="comentarios"
+                    value={formData.comentarios}
+                    onChange={(e) => setFormData(prev => ({ ...prev, comentarios: e.target.value }))}
                     placeholder="Agrega cualquier comentario o aclaración sobre tu solución..."
                     rows={4}
                     maxLength={500}
                     className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    {formData.observaciones.length}/500 caracteres
+                    {formData.comentarios.length}/500 caracteres
                   </p>
                 </div>
 

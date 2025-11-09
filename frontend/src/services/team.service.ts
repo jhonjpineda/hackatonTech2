@@ -19,7 +19,7 @@ export const teamService = {
     return response.json();
   },
 
-  // Obtener equipos por categoría (hackathon)
+  // Obtener equipos por categoría
   async getByCategory(categoryId: string, token: string): Promise<Team[]> {
     const response = await fetch(`${API_URL}/teams/category/${categoryId}`, {
       headers: {
@@ -33,6 +33,33 @@ export const teamService = {
     }
 
     return response.json();
+  },
+
+  // Obtener equipos por hackathon (todas las categorías del hackathon)
+  async getTeamsByHackathon(hackathonId: string, token: string): Promise<Team[]> {
+    // Primero obtener las categorías del hackathon
+    const categoriesResponse = await fetch(`${API_URL}/categories/hackathon/${hackathonId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!categoriesResponse.ok) {
+      throw new Error('Error al obtener las categorías del hackathon');
+    }
+
+    const categories = await categoriesResponse.json();
+
+    // Obtener equipos de todas las categorías
+    const teamsPromises = categories.map((category: any) =>
+      this.getByCategory(category.id, token)
+    );
+
+    const teamsArrays = await Promise.all(teamsPromises);
+
+    // Aplanar el array de arrays en un solo array
+    return teamsArrays.flat();
   },
 
   // Obtener un equipo por ID

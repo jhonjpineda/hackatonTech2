@@ -303,7 +303,7 @@ export default function NuevoHackathonPage() {
                 value={formData.nombre}
                 onChange={handleChange}
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.nombre ? 'border-red-500' : 'bg-unicauca-dark border-unicauca-purple/30 text-white'
+                  errors.nombre ? 'border-red-500' : 'bg-brand-dark border-brand-purple/30 text-white'
                 }`}
                 placeholder="Ej: Hackathon IA 2025"
               />
@@ -327,7 +327,7 @@ export default function NuevoHackathonPage() {
                 value={formData.descripcionCorta}
                 onChange={handleChange}
                 maxLength={200}
-                className="w-full px-4 py-2 border bg-unicauca-dark border-unicauca-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border bg-brand-dark border-brand-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Descripción breve para la tarjeta (máx. 200 caracteres)"
               />
               <p className="mt-1 text-sm text-gray-500">
@@ -350,7 +350,7 @@ export default function NuevoHackathonPage() {
                 onChange={handleChange}
                 rows={6}
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.descripcion ? 'border-red-500' : 'bg-unicauca-dark border-unicauca-purple/30 text-white'
+                  errors.descripcion ? 'border-red-500' : 'bg-brand-dark border-brand-purple/30 text-white'
                 }`}
                 placeholder="Describe el hackathon, sus objetivos y lo que los participantes pueden esperar..."
               />
@@ -372,7 +372,7 @@ export default function NuevoHackathonPage() {
                 name="modalidad"
                 value={formData.modalidad}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border bg-unicauca-dark border-unicauca-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border bg-brand-dark border-brand-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value={HackathonMode.PRESENCIAL}>Presencial</option>
                 <option value={HackathonMode.VIRTUAL}>Virtual</option>
@@ -401,7 +401,7 @@ export default function NuevoHackathonPage() {
                         className={`flex items-center gap-2 p-3 border-2 rounded-lg transition-all ${
                           isSelected
                             ? 'border-blue-500 bg-blue-50 text-blue-700'
-                            : 'border-gray-200 hover:bg-unicauca-dark border-unicauca-purple/30 text-white text-gray-200'
+                            : 'border-gray-200 hover:bg-brand-dark border-brand-purple/30 text-white text-gray-200'
                         }`}
                       >
                         {topic.icono && <span className="text-xl">{topic.icono}</span>}
@@ -448,7 +448,7 @@ export default function NuevoHackathonPage() {
                   name="ubicacion"
                   value={formData.ubicacion}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border bg-unicauca-dark border-unicauca-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border bg-brand-dark border-brand-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Ej: Campus Principal - Edificio A, Sala 101"
                 />
               </div>
@@ -477,7 +477,7 @@ export default function NuevoHackathonPage() {
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.fechaLimiteInscripcion
                       ? 'border-red-500'
-                      : 'bg-unicauca-dark border-unicauca-purple/30 text-white'
+                      : 'bg-brand-dark border-brand-purple/30 text-white'
                   }`}
                 />
                 {errors.fechaLimiteInscripcion && (
@@ -502,7 +502,7 @@ export default function NuevoHackathonPage() {
                   value={formData.fechaInicio}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.fechaInicio ? 'border-red-500' : 'bg-unicauca-dark border-unicauca-purple/30 text-white'
+                    errors.fechaInicio ? 'border-red-500' : 'bg-brand-dark border-brand-purple/30 text-white'
                   }`}
                 />
                 {errors.fechaInicio && (
@@ -525,7 +525,7 @@ export default function NuevoHackathonPage() {
                   value={formData.fechaFin}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.fechaFin ? 'border-red-500' : 'bg-unicauca-dark border-unicauca-purple/30 text-white'
+                    errors.fechaFin ? 'border-red-500' : 'bg-brand-dark border-brand-purple/30 text-white'
                   }`}
                 />
                 {errors.fechaFin && (
@@ -559,7 +559,7 @@ export default function NuevoHackathonPage() {
                   onChange={handleChange}
                   min={1}
                   max={10}
-                  className="w-full px-4 py-2 border bg-unicauca-dark border-unicauca-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border bg-brand-dark border-brand-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -581,7 +581,7 @@ export default function NuevoHackathonPage() {
                   min={1}
                   max={10}
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.maxMiembrosEquipo ? 'border-red-500' : 'bg-unicauca-dark border-unicauca-purple/30 text-white'
+                    errors.maxMiembrosEquipo ? 'border-red-500' : 'bg-brand-dark border-brand-purple/30 text-white'
                   }`}
                 />
                 {errors.maxMiembrosEquipo && (
@@ -606,7 +606,7 @@ export default function NuevoHackathonPage() {
                   value={formData.maxParticipantes || ''}
                   onChange={handleChange}
                   min={1}
-                  className="w-full px-4 py-2 border bg-unicauca-dark border-unicauca-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border bg-brand-dark border-brand-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Dejar vacío para ilimitado"
                 />
               </div>
@@ -626,7 +626,7 @@ export default function NuevoHackathonPage() {
                   value={formData.maxEquipos || ''}
                   onChange={handleChange}
                   min={1}
-                  className="w-full px-4 py-2 border bg-unicauca-dark border-unicauca-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border bg-brand-dark border-brand-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Dejar vacío para ilimitado"
                 />
               </div>
@@ -653,7 +653,7 @@ export default function NuevoHackathonPage() {
                 value={formData.requisitos}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-2 border bg-unicauca-dark border-unicauca-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border bg-brand-dark border-brand-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Conocimientos necesarios, herramientas, etc."
               />
             </div>
@@ -672,7 +672,7 @@ export default function NuevoHackathonPage() {
                 value={formData.premios}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-2 border bg-unicauca-dark border-unicauca-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border bg-brand-dark border-brand-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Describe los premios para los ganadores"
               />
             </div>
@@ -691,7 +691,7 @@ export default function NuevoHackathonPage() {
                 value={formData.reglas}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-2 border bg-unicauca-dark border-unicauca-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border bg-brand-dark border-brand-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Reglas del hackathon"
               />
             </div>
@@ -710,7 +710,7 @@ export default function NuevoHackathonPage() {
                 value={formData.recursos}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-2 border bg-unicauca-dark border-unicauca-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border bg-brand-dark border-brand-purple/30 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="APIs, herramientas, mentores, etc."
               />
             </div>
@@ -738,7 +738,7 @@ export default function NuevoHackathonPage() {
                   value={formData.urlDiscord}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.urlDiscord ? 'border-red-500' : 'bg-unicauca-dark border-unicauca-purple/30 text-white'
+                    errors.urlDiscord ? 'border-red-500' : 'bg-brand-dark border-brand-purple/30 text-white'
                   }`}
                   placeholder="https://discord.gg/ejemplo"
                 />
@@ -762,7 +762,7 @@ export default function NuevoHackathonPage() {
                   value={formData.urlSlack}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.urlSlack ? 'border-red-500' : 'bg-unicauca-dark border-unicauca-purple/30 text-white'
+                    errors.urlSlack ? 'border-red-500' : 'bg-brand-dark border-brand-purple/30 text-white'
                   }`}
                   placeholder="https://slack.com/ejemplo"
                 />
@@ -786,7 +786,7 @@ export default function NuevoHackathonPage() {
                   value={formData.urlWhatsapp}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.urlWhatsapp ? 'border-red-500' : 'bg-unicauca-dark border-unicauca-purple/30 text-white'
+                    errors.urlWhatsapp ? 'border-red-500' : 'bg-brand-dark border-brand-purple/30 text-white'
                   }`}
                   placeholder="https://chat.whatsapp.com/ejemplo"
                 />
@@ -812,7 +812,7 @@ export default function NuevoHackathonPage() {
                   name="inscripcionAbierta"
                   checked={formData.inscripcionAbierta}
                   onChange={handleChange}
-                  className="h-4 w-4 text-blue-600 bg-unicauca-dark border-unicauca-purple/30 text-white rounded focus:ring-2 focus:ring-blue-500"
+                  className="h-4 w-4 text-blue-600 bg-brand-dark border-brand-purple/30 text-white rounded focus:ring-2 focus:ring-blue-500"
                 />
                 <label
                   htmlFor="inscripcionAbierta"
@@ -830,7 +830,7 @@ export default function NuevoHackathonPage() {
                   name="publicado"
                   checked={formData.publicado}
                   onChange={handleChange}
-                  className="h-4 w-4 text-blue-600 bg-unicauca-dark border-unicauca-purple/30 text-white rounded focus:ring-2 focus:ring-blue-500"
+                  className="h-4 w-4 text-blue-600 bg-brand-dark border-brand-purple/30 text-white rounded focus:ring-2 focus:ring-blue-500"
                 />
                 <label
                   htmlFor="publicado"

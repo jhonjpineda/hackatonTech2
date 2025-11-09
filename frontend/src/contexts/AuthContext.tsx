@@ -59,7 +59,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(response.user);
       setToken(response.token);
       toast.success('¡Bienvenido!');
-      router.push('/dashboard');
+
+      // Si el usuario debe cambiar su contraseña, redirigir a la página de cambio
+      if (response.user.mustChangePassword) {
+        router.push('/change-password');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (error: any) {
       const message = error.response?.data?.message || 'Error al iniciar sesión';
       toast.error(message);

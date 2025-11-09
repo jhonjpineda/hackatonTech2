@@ -125,22 +125,22 @@ function NewSubmissionPageContent() {
         <div className="mb-6">
           <Link
             href="/dashboard"
-            className="inline-flex items-center text-blue-600 hover:underline mb-4"
+            className="inline-flex items-center text-[#00ffff] hover:text-[#b64cff] transition-colors mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver
           </Link>
 
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-white">
             Nueva Entrega
           </h1>
 
           <div className="mt-4 space-y-2">
-            <p className="text-gray-600 dark:text-gray-400">
-              <span className="font-semibold">Equipo:</span> {team.nombre}
+            <p className="text-gray-200">
+              <span className="font-semibold text-[#00ffff]">Equipo:</span> {team.nombre}
             </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              <span className="font-semibold">Reto:</span> {challenge.titulo}
+            <p className="text-gray-200">
+              <span className="font-semibold text-[#00ffff]">Reto:</span> {challenge.titulo}
             </p>
           </div>
         </div>

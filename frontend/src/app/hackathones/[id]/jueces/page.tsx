@@ -12,11 +12,13 @@ import { Shield, Trash2, UserPlus } from 'lucide-react';
 
 interface Judge {
   id: string;
-  usuario: {
-    id: string;
-    nombre: string;
-    email: string;
-  };
+  documento: string;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  telefono?: string;
+  status: string;
+  createdAt: string;
 }
 
 interface Team {
@@ -154,7 +156,7 @@ export default function HackathonJudgesPage() {
     <DashboardLayout>
       <div className="space-y-6">
         <div className="flex items-center gap-3">
-          <Shield className="h-8 w-8 text-unicauca-purple" />
+          <Shield className="h-8 w-8 text-brand-purple" />
           <div>
             <h1 className="text-3xl font-bold text-white">Gestion de Jueces</h1>
             <p className="text-gray-300 mt-1">{hackathonName}</p>
@@ -167,7 +169,7 @@ export default function HackathonJudgesPage() {
           </div>
         )}
 
-        <div className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 p-6 shadow-lg">
+        <div className="bg-brand-navy rounded-lg border border-brand-purple/30 p-6 shadow-lg">
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
             <UserPlus className="h-5 w-5" />
             Asignar Juez
@@ -181,19 +183,20 @@ export default function HackathonJudgesPage() {
               <select
                 value={selectedJudge}
                 onChange={(e) => setSelectedJudge(e.target.value)}
-                className="w-full px-4 py-2 bg-unicauca-dark border border-unicauca-purple/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-unicauca-purple"
+                className="w-full px-4 py-2 bg-brand-dark border border-brand-purple/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-brand-purple"
+                style={{ colorScheme: 'dark' }}
               >
-                <option value="">-- Selecciona un juez --</option>
+                <option value="" className="bg-brand-dark text-gray-300">-- Selecciona un juez --</option>
                 {judges.map((judge) => (
-                  <option key={judge.id} value={judge.id}>
-                    {judge.usuario.nombre} ({judge.usuario.email})
+                  <option key={judge.id} value={judge.id} className="bg-brand-dark text-white">
+                    {judge.nombres} {judge.apellidos} ({judge.email})
                   </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="flex items-center gap-2 text-gray-200">
+              <label className="flex items-center gap-2 text-gray-100 cursor-pointer hover:text-white transition-colors">
                 <input
                   type="checkbox"
                   checked={assignToAll}
@@ -203,33 +206,33 @@ export default function HackathonJudgesPage() {
                       setSelectedTeams([]);
                     }
                   }}
-                  className="w-4 h-4 text-unicauca-purple bg-unicauca-dark border-unicauca-purple/30 rounded focus:ring-unicauca-purple"
+                  className="w-5 h-5 text-brand-purple bg-brand-navy border-2 border-brand-purple/50 rounded focus:ring-2 focus:ring-brand-purple focus:ring-offset-2 focus:ring-offset-brand-dark cursor-pointer"
                 />
-                Asignar a todos los equipos
+                <span className="font-medium">Asignar a todos los equipos</span>
               </label>
             </div>
 
             {!assignToAll && (
               <div>
-                <label className="block text-sm font-medium text-gray-200 mb-2">
+                <label className="block text-sm font-medium text-gray-100 mb-2">
                   Seleccionar Equipos
                 </label>
-                <div className="space-y-2 max-h-48 overflow-y-auto bg-unicauca-dark rounded-lg p-3 border border-unicauca-purple/30">
+                <div className="space-y-1 max-h-48 overflow-y-auto bg-brand-dark rounded-lg p-3 border border-brand-purple/50">
                   {teams.length === 0 ? (
-                    <p className="text-gray-400 text-sm">No hay equipos disponibles</p>
+                    <p className="text-gray-300 text-sm py-2">No hay equipos disponibles en este hackathon</p>
                   ) : (
                     teams.map((team) => (
                       <label
                         key={team.id}
-                        className="flex items-center gap-2 text-gray-200 hover:bg-unicauca-navy/50 p-2 rounded cursor-pointer"
+                        className="flex items-center gap-3 text-gray-100 hover:bg-brand-navy/70 p-2 rounded cursor-pointer transition-colors"
                       >
                         <input
                           type="checkbox"
                           checked={selectedTeams.includes(team.id)}
                           onChange={() => handleTeamToggle(team.id)}
-                          className="w-4 h-4 text-unicauca-purple bg-unicauca-dark border-unicauca-purple/30 rounded focus:ring-unicauca-purple"
+                          className="w-5 h-5 text-brand-purple bg-brand-navy border-2 border-brand-purple/50 rounded focus:ring-2 focus:ring-brand-purple focus:ring-offset-2 focus:ring-offset-brand-dark cursor-pointer"
                         />
-                        {team.nombre}
+                        <span className="font-medium">{team.nombre}</span>
                       </label>
                     ))
                   )}
@@ -239,39 +242,39 @@ export default function HackathonJudgesPage() {
 
             <button
               onClick={handleAssignJudge}
-              className="w-full px-4 py-2 bg-unicauca-purple text-white rounded-lg hover:bg-unicauca-purple/80 transition-colors shadow-lg font-medium"
+              className="w-full px-4 py-3 bg-brand-purple text-white rounded-lg hover:bg-brand-purple/90 active:bg-brand-purple/70 transition-all shadow-lg font-semibold text-base focus:outline-none focus:ring-2 focus:ring-brand-purple focus:ring-offset-2 focus:ring-offset-brand-navy"
             >
               Asignar Juez
             </button>
           </div>
         </div>
 
-        <div className="bg-unicauca-navy rounded-lg border border-unicauca-purple/30 p-6 shadow-lg">
+        <div className="bg-brand-navy rounded-lg border border-brand-purple/30 p-6 shadow-lg">
           <h2 className="text-xl font-semibold text-white mb-4">Jueces Asignados</h2>
 
           {assignments.length === 0 ? (
-            <p className="text-gray-400">No hay jueces asignados a este hackathon</p>
+            <p className="text-gray-300 text-center py-4">No hay jueces asignados a este hackathon</p>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {assignments.map((assignment) => (
                 <div
                   key={assignment.id}
-                  className="bg-unicauca-dark rounded-lg p-4 border border-unicauca-purple/20"
+                  className="bg-brand-dark rounded-lg p-4 border border-brand-purple/30 hover:border-brand-purple/50 transition-colors"
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium text-white">
-                        {assignment.juez.usuario.nombre}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-white text-lg">
+                        {assignment.juez.nombres} {assignment.juez.apellidos}
                       </h3>
-                      <p className="text-sm text-gray-400">{assignment.juez.usuario.email}</p>
+                      <p className="text-sm text-gray-300 mt-1">{assignment.juez.email}</p>
                       {assignment.equipos && assignment.equipos.length > 0 && (
-                        <div className="mt-2">
-                          <p className="text-sm text-gray-300">Equipos asignados:</p>
-                          <div className="flex flex-wrap gap-2 mt-1">
+                        <div className="mt-3">
+                          <p className="text-sm text-gray-200 font-medium mb-2">Equipos asignados:</p>
+                          <div className="flex flex-wrap gap-2">
                             {assignment.equipos.map((team) => (
                               <span
                                 key={team.id}
-                                className="px-2 py-1 bg-unicauca-purple/20 text-unicauca-purple text-xs rounded"
+                                className="px-3 py-1 bg-brand-purple/30 text-brand-cyan text-sm rounded-full font-medium border border-brand-purple/40"
                               >
                                 {team.nombre}
                               </span>
@@ -282,7 +285,7 @@ export default function HackathonJudgesPage() {
                     </div>
                     <button
                       onClick={() => handleRemoveAssignment(assignment.id)}
-                      className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+                      className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-red-500/50"
                       title="Eliminar asignacion"
                     >
                       <Trash2 className="h-5 w-5" />

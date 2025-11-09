@@ -9,7 +9,8 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiProperty } from '@nestjs/swagger';
+import { IsString, IsOptional, IsArray } from 'class-validator';
 import { JudgeAssignmentsService } from './judge-assignments.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -17,12 +18,26 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../entities/user.entity';
 
 class AssignJudgeDto {
+  @ApiProperty({ description: 'ID del juez a asignar' })
+  @IsString()
   juezId: string;
+
+  @ApiProperty({ description: 'ID del hackathon' })
+  @IsString()
   hackathonId: string;
+
+  @ApiProperty({ description: 'IDs de equipos específicos (opcional)', required: false })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
   teamIds?: string[];
 }
 
 class UpdateAssignmentDto {
+  @ApiProperty({ description: 'IDs de equipos a asignar', required: false })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
   teamIds?: string[];
 }
 

@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -39,6 +40,12 @@ export class ChallengesService {
         'No tienes permisos para agregar retos a esta categoría',
       );
     }
+
+    // Verificar que el porcentaje total no exceda 100%
+    await this.validateTotalPercentage(
+      createChallengeDto.categoryId,
+      createChallengeDto.porcentaje,
+    );
 
     const challenge = this.challengeRepository.create(createChallengeDto);
     return await this.challengeRepository.save(challenge);
@@ -82,6 +89,15 @@ export class ChallengesService {
       throw new ForbiddenException('No tienes permisos para editar este reto');
     }
 
+    // Si se está actualizando el porcentaje, validar
+    if (updateChallengeDto.porcentaje !== undefined) {
+      await this.validateTotalPercentage(
+        challenge.categoryId,
+        updateChallengeDto.porcentaje,
+        id, // Excluir este reto del cálculo
+      );
+    }
+
     Object.assign(challenge, updateChallengeDto);
     return await this.challengeRepository.save(challenge);
   }
@@ -123,5 +139,34 @@ export class ChallengesService {
 
     challenge.estado = 'CLOSED' as any;
     return await this.challengeRepository.save(challenge);
+  }
+
+  /**
+   * Valida que el porcentaje total de retos en una categoría no exceda 100%
+   */
+  private async validateTotalPercentage(
+    categoryId: string,
+    newPercentage: number,
+    excludeChallengeId?: string,
+  ): Promise<void> {
+    // Obtener todos los retos de la categoría
+    const challenges = await this.challengeRepository.find({
+      where: { categoryId },
+    });
+
+    // Calcular el total actual (excluyendo el reto que se está actualizando si aplica)
+    const currentTotal = challenges
+      .filter((c) => c.id !== excludeChallengeId)
+      .reduce((sum, c) => sum + Number(c.porcentaje || 0), 0);
+
+    const newTotal = currentTotal + Number(newPercentage);
+
+    if (newTotal > 100) {
+      throw new BadRequestException(
+        `El porcentaje total de los retos no puede exceder 100%. ` +
+          `Actualmente tienes ${currentTotal.toFixed(2)}% asignado. ` +
+          `Con este reto sería ${newTotal.toFixed(2)}%.`,
+      );
+    }
   }
 }

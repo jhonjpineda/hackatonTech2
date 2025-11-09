@@ -8,8 +8,10 @@ import { StatusBadge } from '@/components/submissions';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { submissionService } from '@/services/submission.service';
+import { evaluationService, Evaluation } from '@/services/evaluation.service';
+import { EvaluationsList } from '@/components/evaluations/EvaluationsList';
 import { Submission, SubmissionStatus } from '@/types/submission';
-import { ArrowLeft, Edit, Trash2, Send, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Send, ExternalLink, Award } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -22,6 +24,8 @@ export default function SubmissionDetailPage() {
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
+  const [loadingEvaluations, setLoadingEvaluations] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -41,12 +45,30 @@ export default function SubmissionDetailPage() {
       setLoading(true);
       const data = await submissionService.getById(id, token);
       setSubmission(data);
+
+      // Cargar evaluaciones de esta entrega
+      loadEvaluations();
     } catch (error: any) {
       console.error('Error al cargar entrega:', error);
       toast.error(error.message || 'Error al cargar la entrega');
       router.push('/dashboard');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadEvaluations = async () => {
+    if (!token) return;
+
+    try {
+      setLoadingEvaluations(true);
+      const data = await evaluationService.getBySubmission(id, token);
+      setEvaluations(data);
+    } catch (error: any) {
+      console.error('Error al cargar evaluaciones:', error);
+      // No mostramos toast error aquí, solo en consola
+    } finally {
+      setLoadingEvaluations(false);
     }
   };
 
@@ -137,6 +159,7 @@ export default function SubmissionDetailPage() {
   const canEdit = submission.status === SubmissionStatus.DRAFT;
   const canSubmit = submission.status === SubmissionStatus.DRAFT;
   const canDelete = submission.status === SubmissionStatus.DRAFT;
+  const canEvaluate = user?.role === 'JUEZ' && submission.status !== SubmissionStatus.DRAFT;
   const tecnologias = submission.tecnologiasArray || [];
 
   return (
@@ -161,6 +184,14 @@ export default function SubmissionDetailPage() {
             </div>
 
             <div className="flex gap-2">
+              {canEvaluate && (
+                <Link href={`/entregas/${submission.id}/evaluar`}>
+                  <Button variant="default" size="sm">
+                    <Award className="h-4 w-4 mr-2" />
+                    Evaluar
+                  </Button>
+                </Link>
+              )}
               {canEdit && (
                 <Link href={`/entregas/${submission.id}/editar`}>
                   <Button variant="outline" size="sm" disabled={actionLoading}>
@@ -372,6 +403,29 @@ export default function SubmissionDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Evaluaciones Section */}
+        {submission.status !== SubmissionStatus.DRAFT && (
+          <div className="mt-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="h-5 w-5" />
+                  Evaluaciones Recibidas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loadingEvaluations ? (
+                  <div className="text-center py-8">
+                    <div className="text-gray-400">Cargando evaluaciones...</div>
+                  </div>
+                ) : (
+                  <EvaluationsList evaluations={evaluations} showJudgeName={true} />
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

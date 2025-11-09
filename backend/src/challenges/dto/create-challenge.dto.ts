@@ -5,6 +5,9 @@ import {
   IsEnum,
   IsUUID,
   IsDateString,
+  IsNumber,
+  Min,
+  Max,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
@@ -43,6 +46,12 @@ export class CreateChallengeDto {
   @IsOptional()
   @IsInt()
   puntos?: number;
+
+  @ApiProperty({ description: 'Porcentaje del reto (del total del hackathon)', default: 0 })
+  @IsNumber()
+  @Min(0)
+  @Max(100)
+  porcentaje: number;
 
   @ApiPropertyOptional({ description: 'Criterios de evaluación' })
   @IsOptional()

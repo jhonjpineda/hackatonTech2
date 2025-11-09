@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { HackathonCard } from '@/components/hackathons/HackathonCard';
 import { hackathonService } from '@/services/hackathonService';
+import { judgeAssignmentService } from '@/services/judge-assignment.service';
 import { Hackathon, HackathonStatus } from '@/types/hackathon';
 import { Plus, Filter, Search } from 'lucide-react';
 import Link from 'next/link';
@@ -33,14 +34,22 @@ export default function HackathonesPage() {
     try {
       setLoading(true);
       setError('');
-      // Si el usuario es organizador, mostrar todos sus hackathones
-      // Si no, mostrar solo los públicos
       let data: Hackathon[];
+
       if (user?.role === 'ORGANIZADOR' && token) {
+        // Organizadores ven todos sus hackathones
         data = await hackathonService.getMyHackathons(token);
+      } else if (user?.role === 'JUEZ' && token) {
+        // Jueces solo ven los hackathones asignados
+        const assignments = await judgeAssignmentService.getMyAssignments(token);
+        data = assignments
+          .filter(assignment => assignment.hackathon)
+          .map(assignment => assignment.hackathon as any);
       } else {
+        // Otros usuarios ven hackathones públicos
         data = await hackathonService.getPublic();
       }
+
       setHackathons(data);
     } catch (err: any) {
       setError(err.message || 'Error al cargar los hackathones');
