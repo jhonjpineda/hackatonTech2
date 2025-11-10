@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { submissionService } from '@/services/submissionService';
+import { submissionService } from '@/services/submission.service';
 import { Submission } from '@/types/submission';
 import { FolderGit2, Search, Filter, Calendar, Award, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
