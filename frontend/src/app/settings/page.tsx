@@ -102,6 +102,45 @@ export default function SettingsPage() {
     }
   };
 
+  const handleClearAndSync = async () => {
+    if (!token) {
+      toast.error('Debes iniciar sesión');
+      return;
+    }
+
+    if (!confirm('¿Estás seguro? Esto eliminará todos tus temas actuales y sincronizará solo el tema de SIGA. Los temas adicionales se perderán.')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // Primero limpiar todos los temas
+      await authService.clearAllTopics();
+      toast.success('Temas eliminados');
+
+      // Luego sincronizar desde SIGA
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'}/auth/sync-topics`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al sincronizar temas');
+      }
+
+      await refreshUser();
+      toast.success('¡Temas re-sincronizados correctamente desde SIGA!');
+    } catch (error: any) {
+      toast.error(error.message || 'Error al re-sincronizar temas');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSaveProfile = async () => {
     if (!user) return;
 
@@ -377,14 +416,28 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <CardTitle>Temas de Interés</CardTitle>
                   {isCampista && (
-                    <Button
-                      onClick={handleSyncTopics}
-                      disabled={loading}
-                      size="sm"
-                      className="bg-[#b64cff] hover:bg-[#b64cff]/80 text-white"
-                    >
-                      {loading ? 'Sincronizando...' : user.interestTopics && user.interestTopics.length > 0 ? 'Re-sincronizar SIGA' : 'Sincronizar desde SIGA'}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={handleSyncTopics}
+                        disabled={loading}
+                        size="sm"
+                        className="bg-[#b64cff] hover:bg-[#b64cff]/80 text-white"
+                      >
+                        {loading ? 'Sincronizando...' : user.interestTopics && user.interestTopics.length > 0 ? 'Re-sincronizar' : 'Sincronizar SIGA'}
+                      </Button>
+                      {user.interestTopics && user.interestTopics.length > 0 && (
+                        <Button
+                          onClick={handleClearAndSync}
+                          disabled={loading}
+                          size="sm"
+                          variant="outline"
+                          className="border-red-500 text-red-500 hover:bg-red-500/10"
+                          title="Eliminar todos los temas y sincronizar solo el de SIGA"
+                        >
+                          Limpiar y Re-sincronizar
+                        </Button>
+                      )}
+                    </div>
                   )}
                 </div>
               </CardHeader>

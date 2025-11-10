@@ -113,6 +113,18 @@ export class AuthController {
     return this.authService.removeInterestTopic(req.user.sub, topicId);
   }
 
+  @Delete('profile/topics')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Limpiar todos los temas de interés para re-sincronizar desde SIGA' })
+  @ApiResponse({
+    status: 200,
+    description: 'Todos los temas eliminados exitosamente',
+  })
+  async clearAllTopics(@Request() req) {
+    return this.authService.clearAllTopics(req.user.sub);
+  }
+
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Refrescar token de acceso' })

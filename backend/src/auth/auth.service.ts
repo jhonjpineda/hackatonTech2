@@ -788,6 +788,26 @@ export class AuthService {
     return this.getCurrentUser(userId);
   }
 
+  async clearAllTopics(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['interestTopics'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    // Limpiar todos los temas
+    user.interestTopics = [];
+    await this.userRepository.save(user);
+
+    return {
+      message: 'Todos los temas fueron eliminados. Ahora puedes sincronizar desde SIGA.',
+      user: await this.getCurrentUser(userId),
+    };
+  }
+
   async changePassword(userId: string, currentPassword: string | undefined, newPassword: string) {
     const user = await this.userRepository.findOne({
       where: { id: userId },

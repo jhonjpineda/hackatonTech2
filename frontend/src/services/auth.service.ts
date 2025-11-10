@@ -170,6 +170,17 @@ class AuthService {
     return response.data;
   }
 
+  async clearAllTopics(): Promise<{ message: string; user: User }> {
+    const response = await axiosInstance.delete('/auth/profile/topics');
+
+    // Actualizar el usuario en localStorage
+    if (response.data.user) {
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+    }
+
+    return response.data;
+  }
+
   async changePassword(currentPassword: string | undefined, newPassword: string): Promise<{ message: string }> {
     const payload: any = { newPassword };
 
