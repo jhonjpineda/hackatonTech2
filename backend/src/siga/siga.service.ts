@@ -308,8 +308,16 @@ export class SigaService {
         throw new Error('Respuesta inválida de SIGA: se esperaba un array de usuarios');
       }
 
-      const sigaUsers = response.data;
+      let sigaUsers = response.data;
       this.logger.log(`Se obtuvieron ${sigaUsers.length} usuarios de SIGA`);
+
+      // Filtrar solo usuarios aprobados si se solicita
+      if (syncDto.onlyApproved) {
+        sigaUsers = sigaUsers.filter(
+          (user: any) => user.inscripcion_aprobada?.toUpperCase() === 'APROBADO'
+        );
+        this.logger.log(`Filtrando solo aprobados: ${sigaUsers.length} usuarios aprobados`);
+      }
 
       let created = 0;
       let updated = 0;
