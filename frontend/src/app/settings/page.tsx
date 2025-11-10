@@ -161,6 +161,22 @@ export default function SettingsPage() {
     );
   };
 
+  const handleRemoveTopic = async (topicId: string) => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      await authService.removeInterestTopic(topicId);
+      await refreshUser();
+      toast.success('Tema eliminado exitosamente');
+    } catch (error: any) {
+      console.error('Error al eliminar tema:', error);
+      toast.error(error.response?.data?.message || 'No puedes eliminar el tema principal de SIGA');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const canEdit = user && (user.role === 'ORGANIZADOR' || user.role === 'JUEZ');
   const isCampista = user?.role === 'CAMPISTA';
 
@@ -398,16 +414,24 @@ export default function SettingsPage() {
                         {user.interestTopics.length > 1 && (
                           <div className="pt-3 border-t border-[#b64cff]/20">
                             <p className="text-sm text-gray-300 mb-2">
-                              Temas Adicionales:
+                              Temas Adicionales (puedes eliminarlos):
                             </p>
                             <div className="flex flex-wrap gap-2">
                               {user.interestTopics.slice(1).map((topic) => (
                                 <Badge
                                   key={topic.id}
                                   variant="default"
-                                  className="text-sm px-3 py-1 bg-[#b64cff]/20 text-[#b64cff] border-[#b64cff]/40"
+                                  className="text-sm px-3 py-1 bg-[#b64cff]/20 text-[#b64cff] border-[#b64cff]/40 flex items-center gap-2"
                                 >
                                   {topic.nombre}
+                                  <button
+                                    onClick={() => handleRemoveTopic(topic.id)}
+                                    disabled={loading}
+                                    className="ml-1 hover:bg-[#b64cff]/40 rounded-full p-0.5 transition-colors"
+                                    title="Eliminar tema"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </button>
                                 </Badge>
                               ))}
                             </div>

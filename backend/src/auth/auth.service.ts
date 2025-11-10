@@ -743,6 +743,43 @@ export class AuthService {
     return this.getCurrentUser(userId);
   }
 
+  async removeInterestTopic(userId: string, topicId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['interestTopics'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    // Solo campistas pueden eliminar temas
+    if (user.role !== UserRole.CAMPISTA) {
+      throw new UnauthorizedException('Solo los campistas pueden modificar temas de interés');
+    }
+
+    // No permitir eliminar si es el único tema (el de SIGA)
+    if (user.interestTopics.length <= 1) {
+      throw new UnauthorizedException('No puedes eliminar el tema principal de SIGA');
+    }
+
+    // No permitir eliminar el primer tema (el de SIGA)
+    const topicIndex = user.interestTopics.findIndex(t => t.id === topicId);
+    if (topicIndex === 0) {
+      throw new UnauthorizedException('No puedes eliminar el tema principal de SIGA');
+    }
+
+    if (topicIndex === -1) {
+      throw new NotFoundException('Tema no encontrado en tus intereses');
+    }
+
+    // Eliminar el tema
+    user.interestTopics = user.interestTopics.filter(t => t.id !== topicId);
+    await this.userRepository.save(user);
+
+    return this.getCurrentUser(userId);
+  }
+
   async changePassword(userId: string, currentPassword: string | undefined, newPassword: string) {
     const user = await this.userRepository.findOne({
       where: { id: userId },

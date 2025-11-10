@@ -9,6 +9,7 @@ import {
   HttpStatus,
   Param,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
@@ -90,6 +91,26 @@ export class AuthController {
   })
   async updateProfile(@Request() req, @Body() updateProfileDto: UpdateProfileDto) {
     return this.authService.updateProfile(req.user.sub, updateProfileDto);
+  }
+
+  @Delete('profile/topics/:topicId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Eliminar tema de interés adicional (solo campistas)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Tema eliminado exitosamente',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'No autorizado o intento de eliminar tema principal de SIGA',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Tema no encontrado',
+  })
+  async removeInterestTopic(@Request() req, @Param('topicId') topicId: string) {
+    return this.authService.removeInterestTopic(req.user.sub, topicId);
   }
 
   @Post('refresh')
