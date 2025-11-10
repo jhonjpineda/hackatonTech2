@@ -703,6 +703,46 @@ export class AuthService {
     });
   }
 
+  async updateProfile(userId: string, updateData: {
+    nombres?: string;
+    apellidos?: string;
+    email?: string;
+    telefono?: string;
+    interestTopicIds?: string[];
+  }) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['interestTopics'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    // Solo permitir actualizar nombres, apellidos, email y teléfono para ORGANIZADOR y JUEZ
+    // Los CAMPISTAS solo pueden actualizar temas de interés adicionales
+    if (user.role === UserRole.ORGANIZADOR || user.role === UserRole.JUEZ) {
+      if (updateData.nombres) user.nombres = updateData.nombres;
+      if (updateData.apellidos) user.apellidos = updateData.apellidos;
+      if (updateData.email) user.email = updateData.email;
+      if (updateData.telefono !== undefined) user.telefono = updateData.telefono;
+    }
+
+    // Actualizar temas de interés adicionales (solo para CAMPISTAS)
+    if (user.role === UserRole.CAMPISTA && updateData.interestTopicIds && updateData.interestTopicIds.length > 0) {
+      const topics = await this.topicRepository.findByIds(updateData.interestTopicIds);
+      // Mantener el tema de interés principal de SIGA y agregar los nuevos
+      user.interestTopics = [...user.interestTopics, ...topics.filter(
+        topic => !user.interestTopics.some(existing => existing.id === topic.id)
+      )];
+    }
+
+    await this.userRepository.save(user);
+
+    // Retornar el usuario actualizado sin la contraseña
+    return this.getCurrentUser(userId);
+  }
+
   async changePassword(userId: string, currentPassword: string | undefined, newPassword: string) {
     const user = await this.userRepository.findOne({
       where: { id: userId },

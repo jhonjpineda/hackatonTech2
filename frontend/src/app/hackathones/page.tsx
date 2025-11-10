@@ -90,8 +90,8 @@ export default function HackathonesPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Hackathones</h1>
-            <p className="mt-1 text-gray-600">
+            <h1 className="text-3xl font-bold text-white">Hackathones</h1>
+            <p className="mt-1 text-gray-300">
               {user.role === 'ORGANIZADOR'
                 ? 'Gestiona tus hackathones'
                 : 'Explora y participa en hackathones'}
@@ -169,7 +169,7 @@ export default function HackathonesPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">
+            <h3 className="text-lg font-medium text-gray-700 mb-1">
               No hay hackathones disponibles
             </h3>
             <p className="text-gray-600">

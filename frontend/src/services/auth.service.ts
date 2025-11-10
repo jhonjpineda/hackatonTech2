@@ -142,6 +142,23 @@ class AuthService {
     return response.data;
   }
 
+  async updateProfile(updateData: {
+    nombres?: string;
+    apellidos?: string;
+    email?: string;
+    telefono?: string;
+    interestTopicIds?: string[];
+  }): Promise<User> {
+    const response = await axiosInstance.put('/auth/profile', updateData);
+
+    // Actualizar el usuario en localStorage
+    if (response.data) {
+      localStorage.setItem('user', JSON.stringify(response.data));
+    }
+
+    return response.data;
+  }
+
   async changePassword(currentPassword: string | undefined, newPassword: string): Promise<{ message: string }> {
     const payload: any = { newPassword };
 

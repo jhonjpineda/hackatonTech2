@@ -81,8 +81,8 @@ export default function DesafiosPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Desafíos</h1>
-            <p className="mt-1 text-gray-600">
+            <h1 className="text-3xl font-bold text-white">Desafíos</h1>
+            <p className="mt-1 text-gray-300">
               {user?.role === 'ORGANIZADOR'
                 ? 'Gestiona los desafíos de tus hackathones'
                 : 'Explora y resuelve desafíos de los hackathones'}
@@ -156,7 +156,7 @@ export default function DesafiosPage() {
         {/* Desafíos Publicados */}
         {publishedChallenges.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
               <Trophy className="h-6 w-6 text-green-600" />
               Desafíos Activos ({publishedChallenges.length})
             </h2>
@@ -171,7 +171,7 @@ export default function DesafiosPage() {
         {/* Borradores (solo organizadores) */}
         {user?.role === 'ORGANIZADOR' && draftChallenges.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
               <Code2 className="h-6 w-6 text-gray-600" />
               Borradores ({draftChallenges.length})
             </h2>
@@ -186,7 +186,7 @@ export default function DesafiosPage() {
         {/* Cerrados */}
         {closedChallenges.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
               <Award className="h-6 w-6 text-purple-600" />
               Desafíos Cerrados ({closedChallenges.length})
             </h2>
@@ -202,7 +202,7 @@ export default function DesafiosPage() {
         {filteredChallenges.length === 0 && (
           <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
             <Code2 className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-1">
+            <h3 className="text-lg font-medium text-gray-700 mb-1">
               No hay desafíos disponibles
             </h3>
             <p className="text-gray-600 mb-4">
@@ -320,7 +320,7 @@ function ChallengeCard({ challenge }: ChallengeCardProps) {
             {challenge.puntos && (
               <div className="flex items-center gap-2 text-sm">
                 <Trophy className="h-4 w-4 text-yellow-500" />
-                <span className="font-medium text-gray-900">
+                <span className="font-medium text-gray-700">
                   {challenge.puntos} puntos
                 </span>
               </div>

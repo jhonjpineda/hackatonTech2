@@ -308,35 +308,92 @@ export default function DashboardPage() {
               <CardDescription>Tus últimas acciones</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-2 rounded hover:bg-gray-50">
-                  <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <Trophy className="h-4 w-4 text-blue-600" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Te uniste a "Hackathon IA 2025"</p>
-                    <p className="text-xs text-gray-500">Hace 2 horas</p>
-                  </div>
+              {loadingSubmissions || loadingStats ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                  <p className="text-sm text-gray-500 mt-2">Cargando actividad...</p>
                 </div>
-                <div className="flex items-center gap-3 p-2 rounded hover:bg-gray-50">
-                  <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                    <Users className="h-4 w-4 text-green-600" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Creaste equipo "Code Warriors"</p>
-                    <p className="text-xs text-gray-500">Hace 1 día</p>
-                  </div>
+              ) : (
+                <div className="space-y-3">
+                  {/* Últimas entregas */}
+                  {submissions.slice(0, 2).map((submission) => (
+                    <Link
+                      key={`activity-submission-${submission.id}`}
+                      href={`/entregas/${submission.id}`}
+                      className="flex items-center gap-3 p-2 rounded hover:bg-gray-50"
+                    >
+                      <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                        <FolderGit2 className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          {submission.status === SubmissionStatus.SUBMITTED
+                            ? 'Enviaste una entrega'
+                            : submission.status === SubmissionStatus.EVALUATED
+                            ? 'Entrega evaluada'
+                            : 'Creaste un borrador'}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                          {submission.challenge?.titulo || 'Desafío'}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+
+                  {/* Equipos */}
+                  {teams.slice(0, 1).map((team) => (
+                    <Link
+                      key={`activity-team-${team.id}`}
+                      href={`/equipos/${team.id}`}
+                      className="flex items-center gap-3 p-2 rounded hover:bg-gray-50"
+                    >
+                      <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                        <Users className="h-4 w-4 text-green-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          Equipo "{team.nombre}"
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {team.members?.length || 0} miembros
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+
+                  {/* Hackathones */}
+                  {hackathons.slice(0, 1).map((hackathon) => (
+                    <Link
+                      key={`activity-hackathon-${hackathon.id}`}
+                      href={`/hackathones/${hackathon.id}`}
+                      className="flex items-center gap-3 p-2 rounded hover:bg-gray-50"
+                    >
+                      <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                        <Trophy className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          Hackathon disponible
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                          {hackathon.nombre}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+
+                  {/* Estado vacío */}
+                  {submissions.length === 0 && teams.length === 0 && hackathons.length === 0 && (
+                    <div className="text-center py-8">
+                      <Clock className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                      <p className="text-sm text-gray-500">No hay actividad reciente</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Comienza participando en hackathones
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-3 p-2 rounded hover:bg-gray-50">
-                  <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
-                    <FolderGit2 className="h-4 w-4 text-purple-600" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Subiste proyecto "EcoApp"</p>
-                    <p className="text-xs text-gray-500">Hace 2 días</p>
-                  </div>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
