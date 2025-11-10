@@ -479,21 +479,29 @@ export class AuthService {
         const topic = await this.sigaService.mapProgramaToTopic(sigaUser.programa_interes);
 
         if (topic) {
-          // Asignar topic al usuario si no lo tiene ya
-          const hasTopic = user.interestTopics?.some(t => t.id === topic.id);
-
-          if (!hasTopic) {
-            if (!user.interestTopics) {
-              user.interestTopics = [];
-            }
-            user.interestTopics.push(topic);
-            await this.userRepository.save(user);
+          if (!user.interestTopics) {
+            user.interestTopics = [];
           }
+
+          // Verificar si el tema de SIGA ya existe en la lista
+          const sigaTopicIndex = user.interestTopics.findIndex(t => t.id === topic.id);
+
+          if (sigaTopicIndex === -1) {
+            // Si no existe, agregarlo al inicio (como tema principal)
+            user.interestTopics.unshift(topic);
+          } else if (sigaTopicIndex !== 0) {
+            // Si existe pero no está en la primera posición, moverlo al inicio
+            const [sigaTopic] = user.interestTopics.splice(sigaTopicIndex, 1);
+            user.interestTopics.unshift(sigaTopic);
+          }
+          // Si ya está en la posición 0, no hacer nada
+
+          await this.userRepository.save(user);
         }
       }
 
       return {
-        message: 'Temas de interés sincronizados exitosamente',
+        message: 'Temas de interés sincronizados exitosamente desde SIGA',
         topics: user.interestTopics,
       };
     } catch (error) {

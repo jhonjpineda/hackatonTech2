@@ -376,14 +376,14 @@ export default function SettingsPage() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Temas de Interés</CardTitle>
-                  {isCampista && user.interestTopics && user.interestTopics.length === 0 && (
+                  {isCampista && (
                     <Button
                       onClick={handleSyncTopics}
                       disabled={loading}
                       size="sm"
                       className="bg-[#b64cff] hover:bg-[#b64cff]/80 text-white"
                     >
-                      {loading ? 'Sincronizando...' : 'Sincronizar desde SIGA'}
+                      {loading ? 'Sincronizando...' : user.interestTopics && user.interestTopics.length > 0 ? 'Re-sincronizar SIGA' : 'Sincronizar desde SIGA'}
                     </Button>
                   )}
                 </div>
