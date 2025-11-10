@@ -376,22 +376,62 @@ export default function SettingsPage() {
                 {/* Temas actuales del usuario */}
                 {user.interestTopics && user.interestTopics.length > 0 ? (
                   <>
-                    <p className="text-sm text-gray-300 mb-4">
-                      {isCampista
-                        ? 'Temas sincronizados desde tu perfil de SIGA:'
-                        : 'Tus temas de interés:'}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {user.interestTopics.map((topic) => (
-                        <Badge
-                          key={topic.id}
-                          variant="default"
-                          className="text-sm px-3 py-1 bg-[#b64cff]/20 text-[#00ffff] border-[#b64cff]/40"
-                        >
-                          {topic.nombre}
-                        </Badge>
-                      ))}
-                    </div>
+                    {isCampista ? (
+                      <div className="space-y-4">
+                        {/* Tema principal de SIGA */}
+                        <div>
+                          <p className="text-sm text-gray-300 mb-2 flex items-center gap-2">
+                            <span className="inline-block w-2 h-2 bg-[#00ffff] rounded-full"></span>
+                            Tema Principal (SIGA - No modificable):
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            <Badge
+                              variant="default"
+                              className="text-sm px-3 py-1.5 bg-[#00ffff]/20 text-[#00ffff] border-[#00ffff]/60 font-semibold"
+                            >
+                              {user.interestTopics[0]?.nombre}
+                            </Badge>
+                          </div>
+                        </div>
+
+                        {/* Temas adicionales */}
+                        {user.interestTopics.length > 1 && (
+                          <div className="pt-3 border-t border-[#b64cff]/20">
+                            <p className="text-sm text-gray-300 mb-2">
+                              Temas Adicionales:
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {user.interestTopics.slice(1).map((topic) => (
+                                <Badge
+                                  key={topic.id}
+                                  variant="default"
+                                  className="text-sm px-3 py-1 bg-[#b64cff]/20 text-[#b64cff] border-[#b64cff]/40"
+                                >
+                                  {topic.nombre}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-sm text-gray-300 mb-4">
+                          Tus temas de interés:
+                        </p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {user.interestTopics.map((topic) => (
+                            <Badge
+                              key={topic.id}
+                              variant="default"
+                              className="text-sm px-3 py-1 bg-[#b64cff]/20 text-[#00ffff] border-[#b64cff]/40"
+                            >
+                              {topic.nombre}
+                            </Badge>
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </>
                 ) : (
                   <div className="text-center py-6 mb-4">
