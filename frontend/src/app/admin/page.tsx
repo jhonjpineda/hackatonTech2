@@ -51,6 +51,29 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Gestión de Usuarios */}
+          <Link
+            href="/admin/usuarios"
+            className="bg-brand-navy rounded-lg border border-blue-500/30 p-6 hover:shadow-lg hover:border-blue-500 hover:shadow-blue-500/20 transition-all"
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 bg-blue-500/20 rounded-lg">
+                <Users className="h-8 w-8 text-blue-500" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-white">
+                  Gestión de Usuarios
+                </h2>
+              </div>
+            </div>
+            <p className="text-gray-300 mb-4">
+              Ver todos los usuarios, cambiar roles y administrar el sistema
+            </p>
+            <div className="text-blue-500 font-medium flex items-center gap-2">
+              Ir a Usuarios →
+            </div>
+          </Link>
+
           {/* Gestión de Jueces */}
           <Link
             href="/admin/jueces"

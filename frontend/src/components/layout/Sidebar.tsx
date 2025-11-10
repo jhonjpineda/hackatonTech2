@@ -27,6 +27,7 @@ const navigation = [
 ];
 
 const adminNavigation = [
+  { name: 'Gestión de Usuarios', href: '/admin/usuarios', icon: Users, rolesAllowed: ['ORGANIZADOR'] },
   { name: 'Gestión de Jueces', href: '/admin/jueces', icon: Shield, rolesAllowed: ['ORGANIZADOR'] },
   { name: 'Gestión de Organizadores', href: '/admin/organizadores', icon: Shield, rolesAllowed: ['ORGANIZADOR'] },
 ];

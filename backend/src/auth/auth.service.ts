@@ -711,6 +711,73 @@ export class AuthService {
     });
   }
 
+  async getAllUsers() {
+    return await this.userRepository.find({
+      select: {
+        id: true,
+        documento: true,
+        nombres: true,
+        apellidos: true,
+        email: true,
+        telefono: true,
+        role: true,
+        status: true,
+        source: true,
+        createdAt: true,
+        updatedAt: true,
+        lastLogin: true,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+  }
+
+  async updateUserRole(userId: string, newRole: UserRole) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    user.role = newRole;
+    await this.userRepository.save(user);
+
+    return {
+      message: `Rol actualizado a ${newRole} exitosamente`,
+      user: await this.getCurrentUser(userId),
+    };
+  }
+
+  async deleteUser(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    // No permitir eliminar el propio usuario
+    if (user.role === UserRole.ORGANIZADOR) {
+      const organizerCount = await this.userRepository.count({
+        where: { role: UserRole.ORGANIZADOR },
+      });
+
+      if (organizerCount <= 1) {
+        throw new BadRequestException('No puedes eliminar al único organizador del sistema');
+      }
+    }
+
+    await this.userRepository.remove(user);
+
+    return {
+      message: 'Usuario eliminado exitosamente',
+    };
+  }
+
   async updateProfile(userId: string, updateData: {
     nombres?: string;
     apellidos?: string;

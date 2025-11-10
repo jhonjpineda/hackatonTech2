@@ -297,6 +297,65 @@ export class AuthController {
     return this.authService.getAllJudges();
   }
 
+  @Get('users')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ORGANIZADOR)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Obtener todos los usuarios del sistema (solo ORGANIZADOR)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de todos los usuarios',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tiene permisos',
+  })
+  async getAllUsers() {
+    return this.authService.getAllUsers();
+  }
+
+  @Put('users/:userId/role')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ORGANIZADOR)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Actualizar rol de un usuario (solo ORGANIZADOR)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Rol actualizado exitosamente',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Usuario no encontrado',
+  })
+  async updateUserRole(
+    @Param('userId') userId: string,
+    @Body('role') role: UserRole,
+  ) {
+    return this.authService.updateUserRole(userId, role);
+  }
+
+  @Delete('users/:userId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ORGANIZADOR)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Eliminar un usuario (solo ORGANIZADOR)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Usuario eliminado exitosamente',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Usuario no encontrado',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'No se puede eliminar al único organizador',
+  })
+  async deleteUser(@Param('userId') userId: string) {
+    return this.authService.deleteUser(userId);
+  }
+
   @Post('create-organizer')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ORGANIZADOR)
